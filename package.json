@@ -1,0 +1,56 @@
+{
+  "name": "@xilytix/sysutils",
+  "version": "0.0.1",
+  "description": "Xilytix System types, constants and utilities",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/xilytix/sysutils.git"
+  },
+  "keywords": [
+    "Xilytix",
+    "System",
+    "Utilities"
+  ],
+  "homepage": "https://xilytix.com",
+  "author": {
+    "name": "Xilytix",
+    "url": "https://xilytix.com/"
+  },
+  "license": "SEE LICENSE IN license.txt",
+  "bugs": {
+    "url": "https://github.com/xilytix/sysutils/issues"
+  },
+  "module": "dist/code/public-api.js",
+  "typings": "dist/types/public-api.d.ts",
+  "files": [
+    "dist/**/*",
+    "src/**/*.ts"
+  ],
+  "scripts": {
+    "lint": "eslint -c .eslintrc.json --ext .ts src/",
+    "build": "tsc --build ./tsconfig.json",
+    "force-build": "tsc --build --force ./tsconfig.json",
+    "lib": "tsc --project ./tsconfig.json --emitDeclarationOnly",
+    "rollup": "npx api-extractor run --local --verbose",
+    "types": "npm run lib && npm run rollup",
+    "api": "npm run build && npm run rollup",
+    "force-api": "npm run force-build && npm run rollup",
+    "clean": "npx del-cli ./dist/* && npx del-cli ./lib/*",
+    "dist": "npm run clean && npm run force-api",
+    "publish": "npm publish --access=public"
+  },
+  "dependencies": {
+    "decimal.js-light": "^2.5.1",
+    "nanoid": "^5.0.6"
+  },
+  "devDependencies": {
+    "@microsoft/api-extractor": "^7.42.3",
+    "@typescript-eslint/eslint-plugin": "^7.1.1",
+    "@typescript-eslint/parser": "^7.1.1",
+    "del-cli": "^5.1.0",
+    "eslint": "^8.57.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.1",
+    "typescript": "^5.3.3"
+  }
+}
