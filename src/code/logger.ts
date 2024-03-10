@@ -17,68 +17,32 @@ export class Logger {
     }
 
     log(levelId: Logger.LevelId, text: string, maxTextLength?: number, telemetryAndExtra?: string) {
-        const logEvent = this.createLogEvent(levelId, undefined, text, maxTextLength, telemetryAndExtra)
+        const logEvent = this.createLogEvent(levelId, text, maxTextLength, telemetryAndExtra)
         this.notifyLogEvent(logEvent);
     }
 
     logDebug(text: string, maxTextLength?: number, telemetryAndExtra?: string) {
-        const logEvent = this.createLogEvent(Logger.LevelId.Debug, undefined, text, maxTextLength, telemetryAndExtra)
+        const logEvent = this.createLogEvent(Logger.LevelId.Debug, text, maxTextLength, telemetryAndExtra)
         this.notifyLogEvent(logEvent);
     }
 
     logInfo(text: string, telemetryAndExtra?: string) {
-        const logEvent = this.createLogEvent(Logger.LevelId.Info, undefined, text, undefined, telemetryAndExtra)
+        const logEvent = this.createLogEvent(Logger.LevelId.Info, text, undefined, telemetryAndExtra)
         this.notifyLogEvent(logEvent);
     }
 
     logWarning(text: string, telemetryAndExtra = '') {
-        const logEvent = this.createLogEvent(Logger.LevelId.Warning, undefined, text, undefined, telemetryAndExtra)
+        const logEvent = this.createLogEvent(Logger.LevelId.Warning, text, undefined, telemetryAndExtra)
         this.notifyLogEvent(logEvent);
     }
 
     logError(text: string, maxTextLength?: number, telemetryAndExtra = '') {
-        const logEvent = this.createLogEvent(Logger.LevelId.Error, undefined, text, maxTextLength, telemetryAndExtra)
+        const logEvent = this.createLogEvent(Logger.LevelId.Error, text, maxTextLength, telemetryAndExtra)
         this.notifyLogEvent(logEvent);
-    }
-
-    logPersistError(code: string, text?: string, maxTextLength?: number, telemetryAndExtra = '') {
-        this.logCodeError(Logger.ErrorTypeId.Persist, code, text, maxTextLength, telemetryAndExtra)
-    }
-
-    logExternalError(code: string, text: string, maxTextLength?: number, telemetryAndExtra = '') {
-        this.logCodeError(Logger.ErrorTypeId.External, code, text, maxTextLength, telemetryAndExtra)
-    }
-
-    logDataError(code: string, text: string, maxTextLength?: number, telemetryAndExtra = '') {
-        this.logCodeError(Logger.ErrorTypeId.Data, code, text, maxTextLength, telemetryAndExtra)
-    }
-
-    logLayoutError(code: string, text: string, maxTextLength?: number, telemetryAndExtra = '') {
-        this.logCodeError(Logger.ErrorTypeId.Layout, code, text, maxTextLength, telemetryAndExtra)
-    }
-
-    logConfigError(code: string, text: string, maxTextLength?: number, telemetryAndExtra = '') {
-        this.logCodeError(Logger.ErrorTypeId.Config, code, text, maxTextLength, telemetryAndExtra)
     }
 
     logSevere(text: string, maxTextLength?: number, telemetryAndExtra = '') {
-        const logEvent = this.createLogEvent(Logger.LevelId.Severe, undefined, text, maxTextLength, telemetryAndExtra)
-        this.notifyLogEvent(logEvent);
-    }
-
-    private logCodeError(
-        errorTypeId: Logger.ErrorTypeId | undefined,
-        code: string,
-        text: string | undefined,
-        maxTextLength: number | undefined,
-        telemetryAndExtra: string | undefined,
-    ) {
-        if (text === undefined) {
-            text = code;
-        } else {
-            text = `${code}: ${text}`
-        }
-        const logEvent = this.createLogEvent(Logger.LevelId.Error, errorTypeId, text, maxTextLength, telemetryAndExtra)
+        const logEvent = this.createLogEvent(Logger.LevelId.Severe, text, maxTextLength, telemetryAndExtra)
         this.notifyLogEvent(logEvent);
     }
 
@@ -92,21 +56,18 @@ export class Logger {
 
     private createLogEvent(
         levelId: Logger.LevelId,
-        errorTypeId: Logger.ErrorTypeId | undefined,
         text: string,
         maxTextLength: number | undefined,
         telemetryAndExtra: string | undefined
     ) {
         const logEvent: Logger.LogEvent = {
             levelId,
-            errorTypeId,
             text,
             maxTextLength,
             telemetryAndExtra,
         };
         return logEvent;
     }
-
 }
 
 /** @public */
@@ -121,15 +82,6 @@ export namespace Logger {
         Severe,
     }
 
-    export const enum ErrorTypeId {
-        General,
-        Persist,
-        External,
-        Data,
-        Config,
-        Layout,
-    }
-
     // do not use InternalErrors as causes circular loop
     export class UnreachableCaseError extends Error {
         constructor(code: string, value: never) {
@@ -140,7 +92,6 @@ export namespace Logger {
 
     export interface LogEvent {
         readonly levelId: LevelId;
-        readonly errorTypeId: Logger.ErrorTypeId | undefined;
         readonly text: string;
         readonly maxTextLength: number | undefined;
         readonly telemetryAndExtra: string | undefined;
