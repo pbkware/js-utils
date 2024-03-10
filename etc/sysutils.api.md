@@ -149,6 +149,8 @@ export const enum DayOfWeek {
     Wednesday = 3
 }
 
+export { Decimal }
+
 // @public (undocumented)
 export function deepExtendObject(target: Record<string, unknown>, obj: Record<string, unknown> | undefined): Record<string, unknown>;
 
@@ -542,6 +544,90 @@ export const enum ListChangeTypeId {
     // (undocumented)
     Replace = 1
 }
+
+// @public (undocumented)
+export class Logger {
+    // (undocumented)
+    log(levelId: Logger.LevelId, text: string, maxTextLength?: number, telemetryAndExtra?: string): void;
+    // (undocumented)
+    logConfigError(code: string, text: string, maxTextLength?: number, telemetryAndExtra?: string): void;
+    // (undocumented)
+    logDataError(code: string, text: string, maxTextLength?: number, telemetryAndExtra?: string): void;
+    // (undocumented)
+    logDebug(text: string, maxTextLength?: number, telemetryAndExtra?: string): void;
+    // (undocumented)
+    logError(text: string, maxTextLength?: number, telemetryAndExtra?: string): void;
+    // (undocumented)
+    get logEventer(): Logger.LogEventer | undefined;
+    // (undocumented)
+    logExternalError(code: string, text: string, maxTextLength?: number, telemetryAndExtra?: string): void;
+    // (undocumented)
+    logInfo(text: string, telemetryAndExtra?: string): void;
+    // (undocumented)
+    logLayoutError(code: string, text: string, maxTextLength?: number, telemetryAndExtra?: string): void;
+    // (undocumented)
+    logPersistError(code: string, text?: string, maxTextLength?: number, telemetryAndExtra?: string): void;
+    // (undocumented)
+    logSevere(text: string, maxTextLength?: number, telemetryAndExtra?: string): void;
+    // (undocumented)
+    logWarning(text: string, telemetryAndExtra?: string): void;
+    // (undocumented)
+    setLogEventer(value: Logger.LogEventer): void;
+}
+
+// @public (undocumented)
+export namespace Logger {
+    // (undocumented)
+    export const enum ErrorTypeId {
+        // (undocumented)
+        Config = 4,
+        // (undocumented)
+        Data = 3,
+        // (undocumented)
+        External = 2,
+        // (undocumented)
+        General = 0,
+        // (undocumented)
+        Layout = 5,
+        // (undocumented)
+        Persist = 1
+    }
+    // (undocumented)
+    export const enum LevelId {
+        // (undocumented)
+        Debug = 0,
+        // (undocumented)
+        Error = 3,
+        // (undocumented)
+        Info = 1,
+        // (undocumented)
+        Severe = 4,
+        // (undocumented)
+        Warning = 2
+    }
+    // (undocumented)
+    export interface LogEvent {
+        // (undocumented)
+        readonly errorTypeId: Logger.ErrorTypeId | undefined;
+        // (undocumented)
+        readonly levelId: LevelId;
+        // (undocumented)
+        readonly maxTextLength: number | undefined;
+        // (undocumented)
+        readonly telemetryAndExtra: string | undefined;
+        // (undocumented)
+        readonly text: string;
+    }
+    // (undocumented)
+    export type LogEventer = (this: void, logEvent: LogEvent) => void;
+    // (undocumented)
+    export class UnreachableCaseError extends Error {
+        constructor(code: string, value: never);
+    }
+}
+
+// @public (undocumented)
+export const logger: Logger;
 
 // @public (undocumented)
 export type MapKey = string;

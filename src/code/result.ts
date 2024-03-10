@@ -1,4 +1,4 @@
-// (c) 2024 Xilytix
+// (c) 2024 Xilytix Pty Ltd
 
 /** @public */
 export type Result<T, E = string> = Ok<T, E> | Err<T, E>;

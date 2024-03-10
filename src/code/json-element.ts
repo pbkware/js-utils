@@ -1,4 +1,4 @@
-// (c) 2024 Xilytix
+// (c) 2024 Xilytix Pty Ltd
 
 import { Decimal } from 'decimal.js-light';
 import { Err, Ok, Result } from './result';

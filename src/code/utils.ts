@@ -1,4 +1,4 @@
-// (c) 2024 Xilytix
+// (c) 2024 Xilytix Pty Ltd
 
 import { Config, Decimal, Numeric } from 'decimal.js-light';
 import { nanoid } from 'nanoid';
