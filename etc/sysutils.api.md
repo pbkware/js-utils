@@ -24,6 +24,19 @@ export function addToCapacitisedArrayUniquely<T>(target: T[], count: Integer, ad
 export function addToGrow15ArrayUniquely<T>(target: T[], count: Integer, addition: readonly T[]): number;
 
 // @public (undocumented)
+export class AssertInternalError extends InternalError {
+    constructor(code: string, message?: string);
+}
+
+// @public (undocumented)
+export namespace AssertInternalError {
+    // (undocumented)
+    export function createIfNotError(e: unknown, code: string, extraMessage?: string, extraFormatting?: InternalError.ExtraFormatting): Error;
+    // (undocumented)
+    export function throwErrorIfPromiseRejected<T>(promise: Promise<T>, code: string, extraMessage?: string, extraFormatting?: InternalError.ExtraFormatting): void;
+}
+
+// @public (undocumented)
 export type BooleanOrUndefined = boolean | undefined;
 
 // @public (undocumented)
@@ -160,6 +173,11 @@ export function deepExtendValue(existingTarget: unknown, value: unknown): unknow
 // @public (undocumented)
 export function delay1Tick(ftn: () => void): ReturnType<typeof setTimeout>;
 
+// @public (undocumented)
+export class EnumInfoOutOfOrderError extends InternalError {
+    constructor(enumName: string, outOfOrderInfoElementIndex: number, infoDescription: string);
+}
+
 // Warning: (ae-missing-release-tag) "Err" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
 //
 // @public (undocumented)
@@ -222,6 +240,38 @@ export type IndexSignatureHack<T> = {
 
 // @public (undocumented)
 export type Integer = number;
+
+// @public (undocumented)
+export abstract class InternalError extends Error {
+    constructor(errorType: string, code: string, message?: string);
+    // (undocumented)
+    readonly code: string;
+}
+
+// @public (undocumented)
+export namespace InternalError {
+    // (undocumented)
+    export function appendToErrorMessage(e: unknown, appendText: string): unknown;
+    // (undocumented)
+    export const enum ExtraFormatting {
+        // (undocumented)
+        Ignore = 0,
+        // (undocumented)
+        Postpend = 3,
+        // (undocumented)
+        PostpendColonSpace = 4,
+        // (undocumented)
+        PostpendColonSpaceQuoted = 5,
+        // (undocumented)
+        PrependWithColonSpace = 1,
+        // (undocumented)
+        PrependWithColonSpaceQuoteError = 2
+    }
+    // (undocumented)
+    export function formatExtra(existingMessage: string, extraMessage: string, extraFormatting: ExtraFormatting): string;
+    // (undocumented)
+    export function prependErrorMessage(e: unknown, prependText: string): unknown;
+}
 
 // @public (undocumented)
 export interface IntlNumberFormatCharParts {
@@ -550,23 +600,13 @@ export class Logger {
     // (undocumented)
     log(levelId: Logger.LevelId, text: string, maxTextLength?: number, telemetryAndExtra?: string): void;
     // (undocumented)
-    logConfigError(code: string, text: string, maxTextLength?: number, telemetryAndExtra?: string): void;
-    // (undocumented)
-    logDataError(code: string, text: string, maxTextLength?: number, telemetryAndExtra?: string): void;
-    // (undocumented)
     logDebug(text: string, maxTextLength?: number, telemetryAndExtra?: string): void;
     // (undocumented)
     logError(text: string, maxTextLength?: number, telemetryAndExtra?: string): void;
     // (undocumented)
     get logEventer(): Logger.LogEventer | undefined;
     // (undocumented)
-    logExternalError(code: string, text: string, maxTextLength?: number, telemetryAndExtra?: string): void;
-    // (undocumented)
     logInfo(text: string, telemetryAndExtra?: string): void;
-    // (undocumented)
-    logLayoutError(code: string, text: string, maxTextLength?: number, telemetryAndExtra?: string): void;
-    // (undocumented)
-    logPersistError(code: string, text?: string, maxTextLength?: number, telemetryAndExtra?: string): void;
     // (undocumented)
     logSevere(text: string, maxTextLength?: number, telemetryAndExtra?: string): void;
     // (undocumented)
@@ -577,21 +617,6 @@ export class Logger {
 
 // @public (undocumented)
 export namespace Logger {
-    // (undocumented)
-    export const enum ErrorTypeId {
-        // (undocumented)
-        Config = 4,
-        // (undocumented)
-        Data = 3,
-        // (undocumented)
-        External = 2,
-        // (undocumented)
-        General = 0,
-        // (undocumented)
-        Layout = 5,
-        // (undocumented)
-        Persist = 1
-    }
     // (undocumented)
     export const enum LevelId {
         // (undocumented)
@@ -607,8 +632,6 @@ export namespace Logger {
     }
     // (undocumented)
     export interface LogEvent {
-        // (undocumented)
-        readonly errorTypeId: Logger.ErrorTypeId | undefined;
         // (undocumented)
         readonly levelId: LevelId;
         // (undocumented)
@@ -691,6 +714,11 @@ export function newUndefinableDecimal(value: Numeric | undefined): Decimal | und
 
 // @public (undocumented)
 export function newUndefinableNullableDecimal(value: Numeric | undefined | null): Decimal | null | undefined;
+
+// @public (undocumented)
+export class NotImplementedError extends InternalError {
+    constructor(code: string);
+}
 
 // @public (undocumented)
 export const nullDate: Date;
@@ -823,7 +851,27 @@ export type TimeSpan = number;
 export function tryGetErrorMessage(e: unknown): string | undefined;
 
 // @public (undocumented)
+export class UnexpectedCaseError extends InternalError {
+    constructor(code: string, message?: string);
+}
+
+// @public (undocumented)
+export class UnexpectedTypeError extends InternalError {
+    constructor(code: string, message: string);
+}
+
+// @public (undocumented)
+export class UnexpectedUndefinedError extends InternalError {
+    constructor(code: string, message?: string);
+}
+
+// @public (undocumented)
 export function uniqueElementArraysOverlap<T>(left: readonly T[], right: readonly T[]): boolean;
+
+// @public (undocumented)
+export class UnreachableCaseError extends InternalError {
+    constructor(code: string, value: never, errorText?: string);
+}
 
 // (No @packageDocumentation comment for this package)
 

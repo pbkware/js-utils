@@ -1,5 +1,6 @@
 // (c) 2024 Xilytix Pty Ltd
 
+export * from "./internal-error";
 export * from "./json-element";
 export * from "./logger";
 export * from "./result";
