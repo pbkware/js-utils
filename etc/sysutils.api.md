@@ -55,6 +55,78 @@ export function checkLimitTextLength(text: string, maxTextLength: number | undef
 export function cloneDecimal(config: Config): typeof Decimal;
 
 // @public (undocumented)
+export namespace CommaText {
+    const // (undocumented)
+    delimiterChar = ",";
+    const // (undocumented)
+    quoteChar = "\"";
+    const // (undocumented)
+    pairQuoteChar: string;
+    // (undocumented)
+    export class Error extends globalThis.Error {
+        constructor(message: string, errorId: ErrorId, extraInfo: string);
+        // (undocumented)
+        readonly errorId: ErrorId;
+        // (undocumented)
+        readonly extraInfo: string;
+    }
+    // (undocumented)
+    export const enum ErrorId {
+        // (undocumented)
+        IntegerParseStringArray = 2,
+        // (undocumented)
+        InvalidIntegerString = 3,
+        // (undocumented)
+        QuotesNotClosedInLastElement = 1,
+        // (undocumented)
+        UnexpectedCharAfterQuotedElement = 0
+    }
+    // (undocumented)
+    export interface ErrorIdPlusExtra {
+        // (undocumented)
+        readonly errorId: ErrorId;
+        // (undocumented)
+        readonly extraInfo: string;
+    }
+    // (undocumented)
+    export function errorIdToEnglish(errorId: ErrorId): "Unexpected char after quoted element" | "Quotes not closed in last element" | "Integer parse string array" | "Invalid integer string";
+    // (undocumented)
+    export function from2Values(value1: string, value2: string): string;
+    // (undocumented)
+    export function from3Values(value1: string, value2: string, value3: string): string;
+    // (undocumented)
+    export function from4Values(value1: string, value2: string, value3: string, value4: string): string;
+    // (undocumented)
+    export function fromIntegerArray(value: number[]): string;
+    // (undocumented)
+    export function fromStringArray(value: readonly string[]): string;
+    // (undocumented)
+    export function strictValidate(value: string): Result<boolean, ErrorIdPlusExtra>;
+    // (undocumented)
+    export interface StrictValidateResult {
+        // (undocumented)
+        errorText: string;
+        // (undocumented)
+        success: boolean;
+    }
+    // (undocumented)
+    export interface ToIntegerArrayResult {
+        // (undocumented)
+        array: number[];
+        // (undocumented)
+        errorText: string;
+        // (undocumented)
+        success: boolean;
+    }
+    // (undocumented)
+    export function toIntegerArrayWithResult(value: string): Result<number[], ErrorIdPlusExtra>;
+    // (undocumented)
+    export function toStringArray(value: string): string[];
+    // (undocumented)
+    export function tryToStringArray(value: string, strict?: boolean): Result<string[], ErrorIdPlusExtra>;
+}
+
+// @public (undocumented)
 export function compareArray<T>(left: readonly T[], right: readonly T[]): number;
 
 // @public (undocumented)
@@ -796,6 +868,22 @@ export const secsPerMin = 60;
 
 // @public (undocumented)
 export function shuffleElementsUpInArray<T>(array: T[], index: Integer, count: Integer): void;
+
+// @public (undocumented)
+export class StringBuilder {
+    constructor(initialCapacity?: Integer);
+    // (undocumented)
+    append(value: string): void;
+    // (undocumented)
+    appendLine(value?: string): void;
+    // (undocumented)
+    get capacity(): Integer;
+    set capacity(newCapacity: Integer);
+    // (undocumented)
+    clear(): void;
+    // (undocumented)
+    toString(): string;
+}
 
 // @public (undocumented)
 export function subtractElementFromArray<T>(array: readonly T[], element: T): T[];
