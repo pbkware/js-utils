@@ -729,6 +729,7 @@ export function deepExtendValue(existingTarget: unknown, value: unknown): unknow
     }
 }
 
+/** @public */
 export function isUndefinableStringNumberBooleanNestArrayEqual(left: unknown[] | undefined, right: unknown[] | undefined) {
     if (left === undefined) {
         return right === undefined;
@@ -741,6 +742,7 @@ export function isUndefinableStringNumberBooleanNestArrayEqual(left: unknown[] |
     }
 }
 
+/** @public */
 export function isStringNumberBooleanNestArrayEqual(left: unknown[], right: unknown[]) {
     const leftCount = left.length;
     const rightCount = right.length;
@@ -756,6 +758,7 @@ export function isStringNumberBooleanNestArrayEqual(left: unknown[], right: unkn
     }
 }
 
+/** @public */
 export function isStringNumberBooleanNestArrayElementEqual(leftElement: unknown, rightElement: unknown) {
     if (Array.isArray(leftElement)) {
         if (Array.isArray(rightElement)) {
@@ -828,10 +831,12 @@ export function calculateIntlNumberFormatCharParts(numberFormat: Intl.NumberForm
     }
 }
 
+/** @public */
 export function isPartialIntlFormattedNumber(value: string, charParts: IntlNumberFormatCharParts) {
     return hasIntlFormattedNumberGotDigits(value, charParts) !== undefined;
 }
 
+/** @public */
 export function isIntlFormattedNumber(value: string, charParts: IntlNumberFormatCharParts) {
     return hasIntlFormattedNumberGotDigits(value, charParts) === true;
 }
@@ -889,10 +894,12 @@ function hasIntlFormattedNumberGotDigits(value: string, charParts: IntlNumberFor
     return gotDigits;
 }
 
+/** @public */
 export function isPartialIntlFormattedInteger(value: string, charParts: IntlNumberFormatCharParts): boolean {
     return hasIntlFormattedIntegerGotDigits(value, charParts) !== undefined;
 }
 
+/** @public */
 export function isIntlFormattedInteger(value: string, charParts: IntlNumberFormatCharParts): boolean {
     return hasIntlFormattedIntegerGotDigits(value, charParts) === true;
 }
@@ -1191,6 +1198,7 @@ export function dateToUtcYyyyMmDd(value: Date) {
     return yearStr + monthStr + dayOfMonthStr;
 }
 
+/** @public */
 export function dateToDashedYyyyMmDd(date: Date, utc: boolean): string {
     let year: Integer;
     let month: Integer;

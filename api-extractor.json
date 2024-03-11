@@ -327,9 +327,9 @@
      */
     "extractorMessageReporting": {
       "default": {
-        "logLevel": "warning"
+        "logLevel": "error"
         // "addToApiReportFile": false
-      },
+      }
 
       // "ae-extra-release-tag": {
       //   "logLevel": "warning",
@@ -339,133 +339,129 @@
       // . . .
 
 
-      "ae-missing-release-tag": {
-        "logLevel": "none",
-        "addToApiReportFile": true
+      // "ae-missing-release-tag": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // },
+
+      // "ae-internal-missing-underscore": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // }.
+      // "ae-extra-release-tag": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // },
+      // "ae-missing-getter": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // },
+      // "ae-setter-with-docs": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // },
+      // "ae-unresolved-link": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // }
+    },
+
+    /**
+     * Configures handling of messages reported by the TSDoc parser when analyzing code comments.
+     *
+     * TSDoc message identifiers start with "tsdoc-".  For example: "tsdoc-link-tag-unescaped-text"
+     *
+     * DEFAULT VALUE:  A single "default" entry with logLevel=warning.
+     */
+    "tsdocMessageReporting": {
+      "default": {
+        "logLevel": "warning"
+        // "addToApiReportFile": false
       },
-
-      "ae-internal-missing-underscore": {
-        "logLevel": "none",
-        "addToApiReportFile": true
-      }
-    //   "ae-extra-release-tag": {
-    //     "logLevel": "none",
-    //     "addToApiReportFile": true
-    //   },
-    //   "ae-missing-getter": {
-    //     "logLevel": "none",
-    //     "addToApiReportFile": true
-    //   },
-    //   "ae-setter-with-docs": {
-    //     "logLevel": "none",
-    //     "addToApiReportFile": true
-    //   },
-    //   "ae-unresolved-link": {
-    //     "logLevel": "none",
-    //     "addToApiReportFile": true
-    //   }
-    // },
-
-    // /**
-    //  * Configures handling of messages reported by the TSDoc parser when analyzing code comments.
-    //  *
-    //  * TSDoc message identifiers start with "tsdoc-".  For example: "tsdoc-link-tag-unescaped-text"
-    //  *
-    //  * DEFAULT VALUE:  A single "default" entry with logLevel=warning.
-    //  */
-    // "tsdocMessageReporting": {
-    //   "default": {
-    //     "logLevel": "warning"
-    //     // "addToApiReportFile": false
-    //   },
-
-    //   // "tsdoc-link-tag-unescaped-text": {
-    //   //   "logLevel": "warning",
-    //   //   "addToApiReportFile": true
-    //   // },
-    //   //
-    //   // . . .
-
-    //   "tsdoc-undefined-tag": {
-    //     "logLevel": "none",
-    //     "addToApiReportFile": true
-    //   },
-    //   "tsdoc-param-tag-missing-hyphen": {
-    //     "logLevel": "none",
-    //     "addToApiReportFile": true
-    //   },
-    //   "tsdoc-malformed-inline-tag": {
-    //     "logLevel": "none",
-    //     "addToApiReportFile": true
-    //   },
-    //   "tsdoc-escape-right-brace": {
-    //     "logLevel": "none",
-    //     "addToApiReportFile": true
-    //   },
-    //   "tsdoc-inline-tag-missing-braces": {
-    //     "logLevel": "none",
-    //     "addToApiReportFile": true
-    //   },
-    //   "tsdoc-param-tag-with-invalid-type": {
-    //     "logLevel": "none",
-    //     "addToApiReportFile": true
-    //   },
-    //   "tsdoc-escape-greater-than": {
-    //     "logLevel": "none",
-    //     "addToApiReportFile": true
-    //   },
-    //   "tsdoc-reference-selector-missing-parens": {
-    //     "logLevel": "none",
-    //     "addToApiReportFile": true
-    //   },
-    //   "tsdoc-param-tag-with-invalid-optional-name": {
-    //     "logLevel": "none",
-    //     "addToApiReportFile": true
-    //   },
-    //   "tsdoc-reference-missing-dot": {
-    //     "logLevel": "none",
-    //     "addToApiReportFile": true
-    //   },
-    //   "tsdoc-link-tag-destination-syntax": {
-    //     "logLevel": "none",
-    //     "addToApiReportFile": true
-    //   },
-    //   "tsdoc-param-tag-with-invalid-name": {
-    //     "logLevel": "none",
-    //     "addToApiReportFile": true
-    //   },
-    //   "tsdoc-code-span-empty": {
-    //     "logLevel": "none",
-    //     "addToApiReportFile": true
-    //   },
-    //   "tsdoc-code-fence-missing-delimiter": {
-    //     "logLevel": "none",
-    //     "addToApiReportFile": true
-    //   },
-    //   "tsdoc-reference-selector-syntax": {
-    //     "logLevel": "none",
-    //     "addToApiReportFile": true
-    //   },
-    //   "tsdoc-code-span-missing-delimiter": {
-    //     "logLevel": "none",
-    //     "addToApiReportFile": true
-    //   },
-    //   "tsdoc-malformed-html-name": {
-    //     "logLevel": "none",
-    //     "addToApiReportFile": true
-    //   },
-    //   "tsdoc-inline-tag-missing-right-brace": {
-    //     "logLevel": "none",
-    //     "addToApiReportFile": true
-    //   },
-    //   "tsdoc-characters-after-block-tag": {
-    //     "logLevel": "none",
-    //     "addToApiReportFile": true
-    //   },
-    //   "tsdoc-tag-should-not-have-braces": {
-    //     "logLevel": "none",
-    //     "addToApiReportFile": true
-    //   }
+      // "tsdoc-link-tag-unescaped-text": {
+      //   "logLevel": "warning",
+      //   "addToApiReportFile": true
+      // },
+      // "tsdoc-undefined-tag": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // },
+      // "tsdoc-param-tag-missing-hyphen": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // },
+      // "tsdoc-malformed-inline-tag": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // },
+      // "tsdoc-escape-right-brace": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // },
+      // "tsdoc-inline-tag-missing-braces": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // },
+      // "tsdoc-param-tag-with-invalid-type": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // },
+      // "tsdoc-escape-greater-than": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // },
+      // "tsdoc-reference-selector-missing-parens": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // },
+      // "tsdoc-param-tag-with-invalid-optional-name": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // },
+      // "tsdoc-reference-missing-dot": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // },
+      // "tsdoc-link-tag-destination-syntax": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // },
+      // "tsdoc-param-tag-with-invalid-name": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // },
+      // "tsdoc-code-span-empty": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // },
+      // "tsdoc-code-fence-missing-delimiter": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // },
+      // "tsdoc-reference-selector-syntax": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // },
+      // "tsdoc-code-span-missing-delimiter": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // },
+      // "tsdoc-malformed-html-name": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // },
+      // "tsdoc-inline-tag-missing-right-brace": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // },
+      // "tsdoc-characters-after-block-tag": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // },
+      // "tsdoc-tag-should-not-have-braces": {
+      //   "logLevel": "none",
+      //   "addToApiReportFile": true
+      // }
     }
   }
 }

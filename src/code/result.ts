@@ -16,6 +16,7 @@ export class Ok<T, E> {
     }
 }
 
+/** @public */
 export namespace Ok {
     export function createResolvedPromise<T, E>(value: T) {
         const ok = new Ok<T, E>(value);
@@ -50,6 +51,7 @@ export class Err<T = undefined, E = string> {
     }
 }
 
+/** @public */
 export namespace Err {
     export function createResolvedPromise<T = undefined, E = string>(error: E) {
         const err = new Err<T, E>(error);
