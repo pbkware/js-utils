@@ -12,6 +12,8 @@ export * from './modifier-key';
 export * from './multi-event';
 export * from './record-list';
 export * from './result';
+export * from './source-tz-offset-date';
+export * from './source-tz-offset-date-time';
 export * from './string-builder';
 export * from './types';
 export * from './usable-list-change-type';

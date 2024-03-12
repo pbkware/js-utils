@@ -1231,6 +1231,79 @@ export const secsPerMin = 60;
 export function shuffleElementsUpInArray<T>(array: T[], index: Integer, count: Integer): void;
 
 // @public (undocumented)
+export interface SourceTzOffsetDate {
+    // (undocumented)
+    readonly offset: Integer;
+    // (undocumented)
+    readonly utcMidnight: Date;
+}
+
+// @public (undocumented)
+export namespace SourceTzOffsetDate {
+    // (undocumented)
+    export function compare(left: SourceTzOffsetDate, right: SourceTzOffsetDate): ComparisonResult;
+    // (undocumented)
+    export function compareUndefinable(left: SourceTzOffsetDate | undefined, right: SourceTzOffsetDate | undefined, undefinedIsLowest: boolean): ComparisonResult;
+    // (undocumented)
+    export function createCopy(value: SourceTzOffsetDate): SourceTzOffsetDate;
+    // (undocumented)
+    export function createFromIso8601(value: string): SourceTzOffsetDate | undefined;
+    // (undocumented)
+    export function createFromLocalDate(value: Date): SourceTzOffsetDate;
+    // (undocumented)
+    export function createFromUtcDate(value: Date): SourceTzOffsetDate;
+    export function getAsMidnightLocalTimeDate(value: SourceTzOffsetDate): Date;
+    // (undocumented)
+    export function isEqual(left: SourceTzOffsetDate, right: SourceTzOffsetDate): boolean;
+    // (undocumented)
+    export function isUndefinableEqual(left: SourceTzOffsetDate | undefined, right: SourceTzOffsetDate | undefined): boolean;
+    // (undocumented)
+    export function newUndefinable(value: SourceTzOffsetDate | undefined): SourceTzOffsetDate | undefined;
+    // (undocumented)
+    export function toUtcDashedYyyyMmDdString(value: SourceTzOffsetDate): string;
+    // (undocumented)
+    export function toUtcYYYYMMDDString(value: SourceTzOffsetDate): string;
+}
+
+// @public (undocumented)
+export interface SourceTzOffsetDateTime {
+    // (undocumented)
+    readonly offset: Integer;
+    // (undocumented)
+    readonly utcDate: Date;
+}
+
+// @public (undocumented)
+export namespace SourceTzOffsetDateTime {
+    const // (undocumented)
+    nullDateTime: SourceTzOffsetDateTime;
+    // (undocumented)
+    export function compare(left: SourceTzOffsetDateTime, right: SourceTzOffsetDateTime): ComparisonResult;
+    // (undocumented)
+    export function compareUndefinable(left: SourceTzOffsetDateTime | undefined, right: SourceTzOffsetDateTime | undefined, undefinedIsLowest: boolean): ComparisonResult;
+    // (undocumented)
+    export function createCopy(value: SourceTzOffsetDateTime): SourceTzOffsetDateTime;
+    // (undocumented)
+    export function createFromIso8601(value: string): SourceTzOffsetDateTime | undefined;
+    export function getTimezonedDate(value: SourceTzOffsetDateTime, adjustment: TimezoneModeId): Date;
+    // (undocumented)
+    export function isEqual(left: SourceTzOffsetDateTime, right: SourceTzOffsetDateTime): boolean;
+    // (undocumented)
+    export function isUndefinableEqual(left: SourceTzOffsetDateTime | undefined, right: SourceTzOffsetDateTime | undefined): boolean;
+    // (undocumented)
+    export function newUndefinable(value: SourceTzOffsetDateTime | undefined): SourceTzOffsetDateTime | undefined;
+    // (undocumented)
+    export const enum TimezoneModeId {
+        // (undocumented)
+        Local = 1,
+        // (undocumented)
+        Source = 2,
+        // (undocumented)
+        Utc = 0
+    }
+}
+
+// @public (undocumented)
 export class StringBuilder {
     constructor(initialCapacity?: Integer);
     // (undocumented)
