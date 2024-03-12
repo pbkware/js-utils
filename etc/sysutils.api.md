@@ -23,6 +23,9 @@ export function addToCapacitisedArrayUniquely<T>(target: T[], count: Integer, ad
 // @public (undocumented)
 export function addToGrow15ArrayUniquely<T>(target: T[], count: Integer, addition: readonly T[]): number;
 
+// @public
+export function anyBinarySearch<T>(values: T[], item: T, compare: CompareFtn<T>): BinarySearchResult;
+
 // @public (undocumented)
 export class AssertInternalError extends InternalError {
     constructor(code: string, message?: string);
@@ -37,10 +40,62 @@ export namespace AssertInternalError {
 }
 
 // @public (undocumented)
+export interface BinarySearchResult {
+    // (undocumented)
+    found: boolean;
+    // (undocumented)
+    index: Integer;
+}
+
+// @public (undocumented)
 export type BooleanOrUndefined = boolean | undefined;
 
 // @public (undocumented)
 export function calculateIntlNumberFormatCharParts(numberFormat: Intl.NumberFormat): Result<IntlNumberFormatCharParts>;
+
+// @public (undocumented)
+export class ChangeSubscribableComparableList<out T extends U, in U = T> extends ComparableList<T, U> implements RecordList<T> {
+    // (undocumented)
+    add(value: T): number;
+    // (undocumented)
+    addRange(values: readonly T[]): void;
+    // (undocumented)
+    addSubRange(values: readonly T[], rangeStartIndex: Integer, rangeCount: Integer): void;
+    // (undocumented)
+    addUndefinedRange(undefinedValueCount: Integer): void;
+    // (undocumented)
+    clear(): void;
+    // (undocumented)
+    clone(): ChangeSubscribableComparableList<T, U>;
+    // (undocumented)
+    exchange(index1: Integer, index2: Integer): void;
+    // (undocumented)
+    insert(index: Integer, value: T): void;
+    // (undocumented)
+    insertRange(index: Integer, values: readonly T[]): void;
+    // (undocumented)
+    insertSubRange(index: Integer, values: readonly T[], subRangeStartIndex: Integer, subRangeCount: Integer): void;
+    // (undocumented)
+    move(fromIndex: Integer, toIndex: Integer): void;
+    // (undocumented)
+    moveRange(fromIndex: Integer, toIndex: Integer, count: Integer): void;
+    // (undocumented)
+    protected notifyListChange(listChangeTypeId: UsableListChangeTypeId, index: Integer, count: Integer): void;
+    // (undocumented)
+    removeAtIndex(index: Integer): void;
+    // (undocumented)
+    removeAtIndices(removeIndices: Integer[]): void;
+    // (undocumented)
+    removeItems(removeItems: readonly T[]): void;
+    // (undocumented)
+    removeRange(index: Integer, deleteCount: Integer): void;
+    // (undocumented)
+    setAt(index: Integer, value: T): void;
+    // (undocumented)
+    subscribeListChangeEvent(handler: RecordList.ListChangeEventHandler): MultiEvent.DefinedSubscriptionId;
+    // (undocumented)
+    unsubscribeListChangeEvent(subscriptionId: MultiEvent.SubscriptionId): void;
+}
 
 // @public (undocumented)
 export function checkEscapeCharForRegexInsideCharClass(char: string): string;
@@ -127,6 +182,107 @@ export namespace CommaText {
 }
 
 // @public (undocumented)
+export class ComparableList<out T extends U, in U = T> {
+    constructor(compareItemsFtn?: CompareFtn<U>);
+    // (undocumented)
+    add(value: T): number;
+    // (undocumented)
+    addRange(values: readonly T[]): void;
+    // (undocumented)
+    addSubRange(values: readonly T[], subRangeStartIndex: Integer, subRangeCount: Integer): void;
+    // (undocumented)
+    addUndefinedRange(undefinedValueCount: Integer): void;
+    // (undocumented)
+    protected assign(other: ComparableList<T, U>): void;
+    // (undocumented)
+    binarySearchAny(item: T, compareItemsFtn?: CompareFtn<T>): BinarySearchResult;
+    // (undocumented)
+    binarySearchEarliest(item: T, compareItemsFtn?: CompareFtn<T>): BinarySearchResult;
+    // (undocumented)
+    binarySearchLatest(item: T, compareItemsFtn?: CompareFtn<T>): BinarySearchResult;
+    // (undocumented)
+    get capacity(): Integer;
+    set capacity(value: Integer);
+    // (undocumented)
+    capacityIncSize: Integer | undefined;
+    // (undocumented)
+    clear(): void;
+    // (undocumented)
+    clone(): ComparableList<T, U>;
+    // (undocumented)
+    compareItems(left: T, right: T): ComparisonResult;
+    // (undocumented)
+    protected _compareItemsFtn: CompareFtn<U>;
+    // (undocumented)
+    contains(value: T): boolean;
+    // (undocumented)
+    get count(): Integer;
+    set count(value: Integer);
+    // (undocumented)
+    exchange(index1: Integer, index2: Integer): void;
+    // (undocumented)
+    extract(value: T): T;
+    // (undocumented)
+    find(predicate: (value: T, index: Integer) => boolean): T | undefined;
+    // (undocumented)
+    findIndex(predicate: (value: T, index: Integer) => boolean): number;
+    // (undocumented)
+    first(): T;
+    // (undocumented)
+    getAt(index: Integer): T;
+    // (undocumented)
+    has(predicate: (value: T, index: Integer) => boolean): boolean;
+    // (undocumented)
+    indexOf(value: T): number;
+    // (undocumented)
+    insert(index: Integer, value: T): void;
+    // (undocumented)
+    insertRange(index: Integer, values: readonly T[]): void;
+    // (undocumented)
+    insertSubRange(index: Integer, values: readonly T[], subRangeStartIndex: Integer, subRangeCount: Integer): void;
+    // (undocumented)
+    readonly items: T[];
+    // (undocumented)
+    last(): T;
+    // (undocumented)
+    get lastIndex(): number;
+    // (undocumented)
+    move(fromIndex: Integer, toIndex: Integer): void;
+    // (undocumented)
+    moveRange(fromIndex: Integer, toIndex: Integer, count: Integer): void;
+    // (undocumented)
+    remove(value: T): void;
+    // (undocumented)
+    removeAtIndex(index: Integer): void;
+    // (undocumented)
+    removeAtIndices(removeIndices: Integer[], beforeRemoveRangeCallBack?: ComparableList.BeforeRemoveRangeCallBack): void;
+    // (undocumented)
+    removeItems(removeItems: readonly T[], beforeRemoveRangeCallBack?: ComparableList.BeforeRemoveRangeCallBack): void;
+    // (undocumented)
+    removeRange(index: Integer, deleteCount: Integer): void;
+    // (undocumented)
+    setAt(index: Integer, value: T): void;
+    // (undocumented)
+    setGrowthCapacity(growth: Integer): void;
+    // (undocumented)
+    setMinimumCapacity(value: Integer): void;
+    // (undocumented)
+    shift(): T | undefined;
+    // (undocumented)
+    sort(compareItemsFtn?: CompareFtn<T>): void;
+    // (undocumented)
+    toArray(): T[];
+    // (undocumented)
+    trimExcess(): void;
+}
+
+// @public (undocumented)
+export namespace ComparableList {
+    // (undocumented)
+    export type BeforeRemoveRangeCallBack = (this: void, index: Integer, count: Integer) => void;
+}
+
+// @public (undocumented)
 export function compareArray<T>(left: readonly T[], right: readonly T[]): number;
 
 // @public (undocumented)
@@ -140,6 +296,9 @@ export function compareDecimal(left: Decimal, right: Decimal): number;
 
 // @public (undocumented)
 export function compareEnum<T extends number>(left: T, right: T): number;
+
+// @public (undocumented)
+export type CompareFtn<in T> = (this: void, left: T, right: T) => ComparisonResult;
 
 // @public (undocumented)
 export function compareInteger(left: Integer, right: Integer): ComparisonResult;
@@ -243,6 +402,9 @@ export function deepExtendValue(existingTarget: unknown, value: unknown): unknow
 // @public (undocumented)
 export function delay1Tick(ftn: () => void): ReturnType<typeof setTimeout>;
 
+// @public
+export function earliestBinarySearch<T>(values: T[], item: T, compare: CompareFtn<T>): BinarySearchResult;
+
 // @public (undocumented)
 export class EnumInfoOutOfOrderError extends InternalError {
     constructor(enumName: string, outOfOrderInfoElementIndex: number, infoDescription: string);
@@ -272,6 +434,9 @@ export namespace Err {
 }
 
 // @public (undocumented)
+export function firstLastRangedQuickSort<T>(values: T[], compareFtn: CompareFtn<T>, firstIdx: Integer, lastIdx: Integer): void;
+
+// @public (undocumented)
 export function getElementDocumentPosition(element: HTMLElement): {
     left: number;
     top: number;
@@ -291,6 +456,72 @@ export type Guid = string;
 
 // @public (undocumented)
 export const hoursPerDay = 24;
+
+// @public (undocumented)
+export namespace HtmlTypes {
+    // (undocumented)
+    export const enum BorderStyle {
+        // (undocumented)
+        Hidden = "hidden",
+        // (undocumented)
+        Solid = "solid"
+    }
+    // (undocumented)
+    export const enum Display {
+        // (undocumented)
+        Block = "block",
+        // (undocumented)
+        Flex = "flex",
+        // (undocumented)
+        None = "none"
+    }
+    // (undocumented)
+    export const enum FontWeight {
+        // (undocumented)
+        Bold = "bold"
+    }
+    // (undocumented)
+    export const enum Height {
+        // (undocumented)
+        Auto = "auto",
+        // (undocumented)
+        MaxContent = "max-content",
+        // (undocumented)
+        MinContent = "min-content"
+    }
+    // (undocumented)
+    export const enum Opacity {
+        // (undocumented)
+        Opaque = "1",
+        // (undocumented)
+        SemiTransparent = "0.5",
+        // (undocumented)
+        Transparent = "0"
+    }
+    // (undocumented)
+    export const enum Tags {
+        // (undocumented)
+        Display = "display"
+    }
+    // (undocumented)
+    export const enum Visibility {
+        // (undocumented)
+        Hidden = "hidden",
+        // (undocumented)
+        Visible = "visible"
+    }
+    // (undocumented)
+    export const enum Width {
+        // (undocumented)
+        Auto = "auto",
+        // (undocumented)
+        MaxContent = "max-content",
+        // (undocumented)
+        MinContent = "min-content"
+    }
+    const // (undocumented)
+    transparentColor = "transparent";
+}
 
 // @public (undocumented)
 export function incDateByDays(date: Date, count: Integer): void;
@@ -377,6 +608,33 @@ export function isIntlFormattedInteger(value: string, charParts: IntlNumberForma
 
 // @public (undocumented)
 export function isIntlFormattedNumber(value: string, charParts: IntlNumberFormatCharParts): boolean;
+
+// @public (undocumented)
+export namespace Iso8601 {
+    // (undocumented)
+    export interface DateParts {
+        // (undocumented)
+        day: Integer;
+        // (undocumented)
+        month: Integer;
+        // (undocumented)
+        nextIdx: Integer;
+        // (undocumented)
+        year: Integer;
+    }
+    // (undocumented)
+    export function parseDateIntoParts(value: string): DateParts;
+    export function parseLimited(value: string): ParseResult | undefined;
+    // (undocumented)
+    export interface ParseResult {
+        // (undocumented)
+        offset: Integer;
+        // (undocumented)
+        utcDate: Date;
+    }
+    // (undocumented)
+    export function parseYyyymmddDateIntoParts(value: string): DateParts;
+}
 
 // @public (undocumented)
 export function isPartialIntlFormattedInteger(value: string, charParts: IntlNumberFormatCharParts): boolean;
@@ -625,6 +883,9 @@ export namespace JsonValue {
 // @public (undocumented)
 export type JsonValueArray = JsonValue[];
 
+// @public
+export function latestBinarySearch<T>(values: T[], item: T, compare: CompareFtn<T>): BinarySearchResult;
+
 // @public (undocumented)
 export interface Line {
     // (undocumented)
@@ -722,6 +983,31 @@ export const minsPerDay: number;
 export const minsPerHour = 60;
 
 // @public (undocumented)
+export namespace ModifierKey {
+    // (undocumented)
+    export type IdSet = Integer;
+    // (undocumented)
+    export namespace IdSet {
+        // (undocumented)
+        export function create(altKey: boolean, ctrlKey: boolean, metaKey: boolean, shiftKey: boolean): IdSet;
+    }
+    // (undocumented)
+    export function idSetIncludes(idSet: IdSet, value: ModifierKeyId): boolean;
+}
+
+// @public (undocumented)
+export const enum ModifierKeyId {
+    // (undocumented)
+    Alt = 1,
+    // (undocumented)
+    Ctrl = 2,
+    // (undocumented)
+    Meta = 4,
+    // (undocumented)
+    Shift = 8
+}
+
+// @public (undocumented)
 export function moveElementInArray<T>(array: T[], fromIndex: Integer, toIndex: Integer): void;
 
 // @public (undocumented)
@@ -746,6 +1032,32 @@ export const mSecsPerMin: number;
 export const mSecsPerSec = 1000;
 
 // @public (undocumented)
+export class MultiEvent<T> {
+    // (undocumented)
+    copyHandlers(): T[];
+    // (undocumented)
+    get count(): number;
+    // (undocumented)
+    subscribe(handler: T): MultiEvent.DefinedSubscriptionId;
+    // (undocumented)
+    subscribeWithId(handler: T, id: MultiEvent.DefinedSubscriptionId): MultiEvent.DefinedSubscriptionId;
+    // (undocumented)
+    unsubscribe(id: MultiEvent.SubscriptionId): void;
+}
+
+// @public (undocumented)
+export namespace MultiEvent {
+    // (undocumented)
+    export type DefinedSubscriptionId = number;
+    // (undocumented)
+    export function getNextSubscriptionId(): DefinedSubscriptionId;
+    const // (undocumented)
+    nullDefinedSubscriptionId: DefinedSubscriptionId;
+    // (undocumented)
+    export type SubscriptionId = DefinedSubscriptionId | undefined;
+}
+
+// @public (undocumented)
 export function newDate(value: Date): Date;
 
 // @public (undocumented)
@@ -768,6 +1080,18 @@ export function newUndefinableDecimal(value: Numeric | undefined): Decimal | und
 
 // @public (undocumented)
 export function newUndefinableNullableDecimal(value: Numeric | undefined | null): Decimal | null | undefined;
+
+// @public (undocumented)
+export class NotifyMultiEvent extends MultiEvent<() => void> {
+    // (undocumented)
+    trigger(): void;
+}
+
+// @public (undocumented)
+export namespace NotifyMultiEvent {
+    // (undocumented)
+    export type EventHandler = (this: void) => void;
+}
 
 // @public (undocumented)
 export class NotImplementedError extends InternalError {
@@ -828,6 +1152,43 @@ export type PickExcludedEnum<T, K extends T> = {
 
 // @public (undocumented)
 export function priorityCompareInteger(left: Integer, right: Integer, priority: Integer): ComparisonResult;
+
+// @public (undocumented)
+export function quickSort<T>(values: T[], compareFtn: CompareFtn<T>): void;
+
+// @public
+export function rangedAnyBinarySearch<T>(values: T[], item: T, compare: CompareFtn<T>, index: Integer, count: Integer): BinarySearchResult;
+
+// @public
+export function rangedEarliestBinarySearch<T>(values: T[], item: T, compare: CompareFtn<T>, index: Integer, count: Integer): BinarySearchResult;
+
+// @public
+export function rangedLatestBinarySearch<T>(values: T[], item: T, compare: CompareFtn<T>, index: Integer, count: Integer): BinarySearchResult;
+
+// @public (undocumented)
+export function rangedQuickSort<T>(values: T[], compareFtn: CompareFtn<T>, index: Integer, count: Integer): void;
+
+// @public (undocumented)
+export interface RecordList<Record> {
+    // (undocumented)
+    readonly count: Integer;
+    // (undocumented)
+    getAt(index: Integer): Record;
+    // (undocumented)
+    indexOf(record: Record): Integer;
+    // (undocumented)
+    subscribeListChangeEvent(handler: RecordList.ListChangeEventHandler): MultiEvent.DefinedSubscriptionId;
+    // (undocumented)
+    toArray(): readonly Record[];
+    // (undocumented)
+    unsubscribeListChangeEvent(subscriptionId: MultiEvent.SubscriptionId): void;
+}
+
+// @public (undocumented)
+export namespace RecordList {
+    // (undocumented)
+    export type ListChangeEventHandler = (this: void, listChangeTypeId: UsableListChangeTypeId, idx: Integer, count: Integer) => void;
+}
 
 // @public (undocumented)
 export interface Rect {
@@ -939,6 +1300,51 @@ export function uniqueElementArraysOverlap<T>(left: readonly T[], right: readonl
 // @public (undocumented)
 export class UnreachableCaseError extends InternalError {
     constructor(code: string, value: never, errorText?: string);
+}
+
+// @public (undocumented)
+export namespace UsableListChangeType {
+    // (undocumented)
+    export function deregisterMoveParameters(index: Integer): void;
+    // (undocumented)
+    export function getMoveParameters(index: Integer): MoveParameters;
+    // (undocumented)
+    export interface MoveParameters {
+        // (undocumented)
+        count: Integer;
+        // (undocumented)
+        fromIndex: Integer;
+        // (undocumented)
+        toIndex: Integer;
+    }
+    // (undocumented)
+    export function registerMoveParameters(fromIndex: Integer, toIndex: Integer, count: Integer): Integer;
+}
+
+// @public (undocumented)
+export const enum UsableListChangeTypeId {
+    // (undocumented)
+    AfterMove = 8,
+    // (undocumented)
+    AfterReplace = 6,
+    // (undocumented)
+    BeforeMove = 7,
+    // (undocumented)
+    BeforeReplace = 5,
+    // (undocumented)
+    Clear = 10,
+    // (undocumented)
+    Insert = 4,
+    // (undocumented)
+    PreUsableAdd = 1,
+    // (undocumented)
+    PreUsableClear = 2,
+    // (undocumented)
+    Remove = 9,
+    // (undocumented)
+    Unusable = 0,
+    // (undocumented)
+    Usable = 3
 }
 
 // (No @packageDocumentation comment for this package)
