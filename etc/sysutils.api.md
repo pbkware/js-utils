@@ -1256,6 +1256,8 @@ export namespace SourceTzOffsetDate {
     // (undocumented)
     export function isEqual(left: SourceTzOffsetDate, right: SourceTzOffsetDate): boolean;
     // (undocumented)
+    export function isEqualToDate(offsetDate: SourceTzOffsetDate, date: Date): boolean;
+    // (undocumented)
     export function isUndefinableEqual(left: SourceTzOffsetDate | undefined, right: SourceTzOffsetDate | undefined): boolean;
     // (undocumented)
     export function newUndefinable(value: SourceTzOffsetDate | undefined): SourceTzOffsetDate | undefined;
@@ -1288,6 +1290,8 @@ export namespace SourceTzOffsetDateTime {
     export function getTimezonedDate(value: SourceTzOffsetDateTime, adjustment: TimezoneModeId): Date;
     // (undocumented)
     export function isEqual(left: SourceTzOffsetDateTime, right: SourceTzOffsetDateTime): boolean;
+    // (undocumented)
+    export function isEqualToDate(offsetDate: SourceTzOffsetDateTime, date: Date): boolean;
     // (undocumented)
     export function isUndefinableEqual(left: SourceTzOffsetDateTime | undefined, right: SourceTzOffsetDateTime | undefined): boolean;
     // (undocumented)

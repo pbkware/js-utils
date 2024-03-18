@@ -88,6 +88,10 @@ export namespace SourceTzOffsetDate {
         }
     }
 
+    export function isEqualToDate(offsetDate: SourceTzOffsetDate, date: Date) {
+        return isDateEqual(offsetDate.utcMidnight, date);
+    }
+
     export function compare(left: SourceTzOffsetDate, right: SourceTzOffsetDate): ComparisonResult {
         // assumes that utcDates are always midnight
         return compareDate(left.utcMidnight, right.utcMidnight);

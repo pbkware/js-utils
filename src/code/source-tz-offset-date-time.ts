@@ -70,6 +70,10 @@ export namespace SourceTzOffsetDateTime {
         }
     }
 
+    export function isEqualToDate(offsetDate: SourceTzOffsetDateTime, date: Date) {
+        return isDateEqual(offsetDate.utcDate, date);
+    }
+
     export function compare(left: SourceTzOffsetDateTime, right: SourceTzOffsetDateTime): ComparisonResult {
         return compareDate(left.utcDate, right.utcDate);
     }
