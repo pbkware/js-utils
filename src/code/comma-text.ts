@@ -92,7 +92,7 @@ export namespace CommaText {
         }
     }
 
-    export function tryToStringArray(value: string, strict = true): Result<string[], ErrorIdPlusExtra> {
+    export function tryToStringArray(value: string, strict = true): Result<string[], ErrorIdPlusExtra<ErrorId.QuotesNotClosedInLastElement | ErrorId.UnexpectedCharAfterQuotedElement>> {
         function addElement(endPos: number, removeStuffedQuotes: boolean) {
             let elemStr = value.substring(startPos, endPos + 1);
             if (removeStuffedQuotes) {
@@ -196,7 +196,10 @@ export namespace CommaText {
         errorText: string;
     }
 
-    export function toIntegerArrayWithResult(value: string): Result<number[], ErrorIdPlusExtra> {
+    export function toIntegerArrayWithResult(value: string): Result<
+        number[],
+        ErrorIdPlusExtra<ErrorId.QuotesNotClosedInLastElement | ErrorId.UnexpectedCharAfterQuotedElement | ErrorId.InvalidIntegerString>
+    > {
         const strResult = tryToStringArray(value, true);
         if (strResult.isErr()) {
             return strResult.createType();
@@ -219,7 +222,7 @@ export namespace CommaText {
         errorText: string;
     }
 
-    export function strictValidate(value: string): Result<boolean, ErrorIdPlusExtra> {
+    export function strictValidate(value: string): Result<boolean, ErrorIdPlusExtra<ErrorId.QuotesNotClosedInLastElement | ErrorId.UnexpectedCharAfterQuotedElement>> {
         const stringResult = tryToStringArray(value, true);
         if (stringResult.isErr()) {
             return stringResult.createType();
@@ -231,29 +234,33 @@ export namespace CommaText {
     export const enum ErrorId {
         UnexpectedCharAfterQuotedElement,
         QuotesNotClosedInLastElement,
-        IntegerParseStringArray,
         InvalidIntegerString,
-    }
-
-    export interface ErrorIdPlusExtra {
-        readonly errorId: ErrorId;
-        readonly extraInfo: string;
-    }
-
-    export class Error extends globalThis.Error {
-        constructor(message: string, readonly errorId: ErrorId, readonly extraInfo: string) {
-            super(message);
-        }
     }
 
     export function errorIdToEnglish(errorId: ErrorId) {
         switch (errorId) {
             case ErrorId.UnexpectedCharAfterQuotedElement: return 'Unexpected char after quoted element';
             case ErrorId.QuotesNotClosedInLastElement:return 'Quotes not closed in last element';
-            case ErrorId.IntegerParseStringArray:return 'Integer parse string array';
             case ErrorId.InvalidIntegerString:return 'Invalid integer string';
             default:
                 throw new UnreachableCaseError('CTEOITE98114', errorId);
+        }
+    }
+
+    export interface ErrorIdPlusExtra<T extends ErrorId> {
+        readonly errorId: T;
+        readonly extraInfo: string;
+    }
+
+    export namespace ErrorIdPlusExtra {
+        export function toEnglish(errorIdPlusExtra: ErrorIdPlusExtra<ErrorId>) {
+            return `${errorIdToEnglish(errorIdPlusExtra.errorId)}: ${errorIdPlusExtra.extraInfo}`
+        }
+    }
+
+    export class Error extends globalThis.Error {
+        constructor(message: string, readonly errorId: ErrorId, readonly extraInfo: string) {
+            super(message);
         }
     }
 }

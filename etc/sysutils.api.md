@@ -128,23 +128,26 @@ export namespace CommaText {
     // (undocumented)
     export const enum ErrorId {
         // (undocumented)
-        IntegerParseStringArray = 2,
-        // (undocumented)
-        InvalidIntegerString = 3,
+        InvalidIntegerString = 2,
         // (undocumented)
         QuotesNotClosedInLastElement = 1,
         // (undocumented)
         UnexpectedCharAfterQuotedElement = 0
     }
     // (undocumented)
-    export interface ErrorIdPlusExtra {
+    export interface ErrorIdPlusExtra<T extends ErrorId> {
         // (undocumented)
-        readonly errorId: ErrorId;
+        readonly errorId: T;
         // (undocumented)
         readonly extraInfo: string;
     }
     // (undocumented)
-    export function errorIdToEnglish(errorId: ErrorId): "Unexpected char after quoted element" | "Quotes not closed in last element" | "Integer parse string array" | "Invalid integer string";
+    export namespace ErrorIdPlusExtra {
+        // (undocumented)
+        export function toEnglish(errorIdPlusExtra: ErrorIdPlusExtra<ErrorId>): string;
+    }
+    // (undocumented)
+    export function errorIdToEnglish(errorId: ErrorId): "Unexpected char after quoted element" | "Quotes not closed in last element" | "Invalid integer string";
     // (undocumented)
     export function from2Values(value1: string, value2: string): string;
     // (undocumented)
@@ -156,7 +159,7 @@ export namespace CommaText {
     // (undocumented)
     export function fromStringArray(value: readonly string[]): string;
     // (undocumented)
-    export function strictValidate(value: string): Result<boolean, ErrorIdPlusExtra>;
+    export function strictValidate(value: string): Result<boolean, ErrorIdPlusExtra<ErrorId.QuotesNotClosedInLastElement | ErrorId.UnexpectedCharAfterQuotedElement>>;
     // (undocumented)
     export interface StrictValidateResult {
         // (undocumented)
@@ -174,11 +177,11 @@ export namespace CommaText {
         success: boolean;
     }
     // (undocumented)
-    export function toIntegerArrayWithResult(value: string): Result<number[], ErrorIdPlusExtra>;
+    export function toIntegerArrayWithResult(value: string): Result<number[], ErrorIdPlusExtra<ErrorId.QuotesNotClosedInLastElement | ErrorId.UnexpectedCharAfterQuotedElement | ErrorId.InvalidIntegerString>>;
     // (undocumented)
     export function toStringArray(value: string): string[];
     // (undocumented)
-    export function tryToStringArray(value: string, strict?: boolean): Result<string[], ErrorIdPlusExtra>;
+    export function tryToStringArray(value: string, strict?: boolean): Result<string[], ErrorIdPlusExtra<ErrorId.QuotesNotClosedInLastElement | ErrorId.UnexpectedCharAfterQuotedElement>>;
 }
 
 // @public (undocumented)
@@ -354,6 +357,36 @@ export function copyJson(obj: Json): Json;
 
 // @public (undocumented)
 export function copyJsonValue(value: JsonValue): JsonValue;
+
+// @public (undocumented)
+export interface CorrectnessState<Badness> {
+    // (undocumented)
+    badness: Badness;
+    // (undocumented)
+    checkSetUnusable(badness: Badness): void;
+    // (undocumented)
+    setUnusable(badness: Badness): void;
+    // (undocumented)
+    setUsable(badness: Badness): void;
+    // (undocumented)
+    subscribeBadnessChangedEvent(handler: CorrectnessState.BadnessChangedEventHandler): MultiEvent.SubscriptionId;
+    // (undocumented)
+    subscribeUsableChangedEvent(handler: CorrectnessState.UsableChangedEventHandler): MultiEvent.SubscriptionId;
+    // (undocumented)
+    unsubscribeBadnessChangedEvent(subscriptionId: MultiEvent.SubscriptionId): void;
+    // (undocumented)
+    unsubscribeUsableChangedEvent(subscriptionId: MultiEvent.SubscriptionId): void;
+    // (undocumented)
+    usable: boolean;
+}
+
+// @public (undocumented)
+export namespace CorrectnessState {
+    // (undocumented)
+    export type BadnessChangedEventHandler = (this: void) => void;
+    // (undocumented)
+    export type UsableChangedEventHandler = (this: void) => void;
+}
 
 // @public (undocumented)
 export function createNumberGroupCharRemoveRegex(groupChar: string | undefined): RegExp | undefined;
@@ -725,11 +758,11 @@ export class JsonElement {
     // (undocumented)
     getNumber(name: string, defaultValue: number): number;
     // (undocumented)
-    getNumberOrUndefined(name: string, defaultValue: number): number | undefined;
+    getNumberOrUndefined(name: string): number | undefined;
     // (undocumented)
     getString(name: string, defaultValue: string): string;
     // (undocumented)
-    getStringOrUndefined(name: string, defaultValue: string): string | undefined;
+    getStringOrUndefined(name: string): string | undefined;
     // (undocumented)
     hasName(name: string): boolean;
     // (undocumented)
@@ -737,7 +770,7 @@ export class JsonElement {
     // (undocumented)
     newElement(name: string): JsonElement;
     // (undocumented)
-    parse(jsonText: string): Result<void, JsonElement.ErrorId>;
+    parse(jsonText: string): Result<void, JsonElement.ErrorId.InvalidJsonText>;
     // (undocumented)
     setBoolean(name: string, value: boolean | undefined): void;
     // (undocumented)
@@ -775,41 +808,41 @@ export class JsonElement {
     // (undocumented)
     stringify(): string;
     // (undocumented)
-    tryGetAnyJsonValueArray(name: string): Result<JsonValue[], JsonElement.ErrorId>;
+    tryGetAnyJsonValueArray(name: string): Result<JsonValue[], JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotAnArray>;
     // (undocumented)
-    tryGetBoolean(name: string): Result<boolean, JsonElement.ErrorId>;
+    tryGetBoolean(name: string): Result<boolean, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeBoolean>;
     // (undocumented)
-    tryGetBooleanArray(name: string): Result<boolean[], JsonElement.ErrorId>;
+    tryGetBooleanArray(name: string): Result<boolean[], JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotABoolean>;
     // (undocumented)
-    tryGetDate(name: string): Result<Date, JsonElement.ErrorId>;
+    tryGetDate(name: string): Result<Date, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeString>;
     // (undocumented)
-    tryGetDateTime(name: string): Result<Date, JsonElement.ErrorId>;
+    tryGetDateTime(name: string): Result<Date, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeString>;
     // (undocumented)
-    tryGetDecimal(name: string): Result<Decimal, JsonElement.ErrorId>;
+    tryGetDecimal(name: string): Result<Decimal, JsonElement.ErrorId.InvalidDecimal | JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString>;
     // (undocumented)
-    tryGetElement(name: string): Result<JsonElement, JsonElement.ErrorId>;
+    tryGetElement(name: string): Result<JsonElement, JsonElement.ErrorId.ElementIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeObject>;
     // (undocumented)
-    tryGetElementArray(name: string): Result<JsonElement[], JsonElement.ErrorId>;
+    tryGetElementArray(name: string): Result<JsonElement[], JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotAnObject>;
     // (undocumented)
-    tryGetGuid(name: string): Result<Guid, JsonElement.ErrorId>;
+    tryGetGuid(name: string): Result<Guid, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeString>;
     // (undocumented)
-    tryGetInteger(name: string): Result<Integer, JsonElement.ErrorId>;
+    tryGetInteger(name: string): Result<Integer, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeNumber>;
     // (undocumented)
-    tryGetJsonObject(name: string): Result<Json, JsonElement.ErrorId>;
+    tryGetJsonObject(name: string): Result<Json, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeObject>;
     // (undocumented)
-    tryGetJsonObjectArray(name: string): Result<Json[], JsonElement.ErrorId>;
+    tryGetJsonObjectArray(name: string): Result<Json[], JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotJson>;
     // (undocumented)
     tryGetJsonValue(name: string): JsonValue | undefined;
     // (undocumented)
-    tryGetNativeObject(name: string): Result<object, JsonElement.ErrorId>;
+    tryGetNativeObject(name: string): Result<object, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeObject>;
     // (undocumented)
-    tryGetNumber(name: string): Result<number, JsonElement.ErrorId>;
+    tryGetNumber(name: string): Result<number, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeNumber>;
     // (undocumented)
-    tryGetNumberArray(name: string): Result<number[], JsonElement.ErrorId>;
+    tryGetNumberArray(name: string): Result<number[], JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotANumber>;
     // (undocumented)
-    tryGetString(name: string): Result<string, JsonElement.ErrorId>;
+    tryGetString(name: string): Result<string, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeString>;
     // (undocumented)
-    tryGetStringArray(name: string): Result<string[], JsonElement.ErrorId>;
+    tryGetStringArray(name: string): Result<string[], JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotAString>;
 }
 
 // @public (undocumented)
@@ -819,37 +852,35 @@ export namespace JsonElement {
     // (undocumented)
     export const enum ErrorId {
         // (undocumented)
-        DecimalJsonValueIsNotOfTypeString = 8,
-        // (undocumented)
-        ElementIsNotAJsonObject = 2,
+        DecimalJsonValueIsNotOfTypeString = 7,
         // (undocumented)
         ElementIsNotDefined = 1,
         // (undocumented)
-        InvalidDecimal = 9,
+        InvalidDecimal = 8,
         // (undocumented)
         InvalidJsonText = 0,
         // (undocumented)
-        JsonValueArrayElementIsNotABoolean = 15,
+        JsonValueArrayElementIsNotABoolean = 14,
         // (undocumented)
-        JsonValueArrayElementIsNotAnObject = 11,
+        JsonValueArrayElementIsNotAnObject = 10,
         // (undocumented)
-        JsonValueArrayElementIsNotANumber = 14,
+        JsonValueArrayElementIsNotANumber = 13,
         // (undocumented)
-        JsonValueArrayElementIsNotAString = 13,
+        JsonValueArrayElementIsNotAString = 12,
         // (undocumented)
-        JsonValueArrayElementIsNotJson = 12,
+        JsonValueArrayElementIsNotJson = 11,
         // (undocumented)
-        JsonValueIsNotAnArray = 10,
+        JsonValueIsNotAnArray = 9,
         // (undocumented)
-        JsonValueIsNotDefined = 3,
+        JsonValueIsNotDefined = 2,
         // (undocumented)
-        JsonValueIsNotOfTypeBoolean = 7,
+        JsonValueIsNotOfTypeBoolean = 6,
         // (undocumented)
-        JsonValueIsNotOfTypeNumber = 6,
+        JsonValueIsNotOfTypeNumber = 5,
         // (undocumented)
-        JsonValueIsNotOfTypeObject = 4,
+        JsonValueIsNotOfTypeObject = 3,
         // (undocumented)
-        JsonValueIsNotOfTypeString = 5
+        JsonValueIsNotOfTypeString = 4
     }
     // (undocumented)
     export type ForEachBooleanCallback = (this: void, name: string, value: boolean, idx: Integer) => void;
@@ -866,7 +897,7 @@ export namespace JsonElement {
     // (undocumented)
     export type Json = Record<string, JsonValue | undefined>;
     // (undocumented)
-    export function tryGetChildElement(parentElement: JsonElement, childName: string): Result<JsonElement, ErrorId>;
+    export function tryGetChildElement(parentElement: JsonElement, childName: string): Result<JsonElement, ErrorId.ElementIsNotDefined | ErrorId.JsonValueIsNotOfTypeObject>;
 }
 
 // @public (undocumented)
@@ -908,6 +939,149 @@ export const enum ListChangeTypeId {
     Remove = 2,
     // (undocumented)
     Replace = 1
+}
+
+// @public (undocumented)
+export interface LockOpenList<Item extends LockOpenListItem<Item>> {
+    // (undocumented)
+    addItem(item: Item): void;
+    // (undocumented)
+    addItems(items: Item[], addCount?: Integer): void;
+    // (undocumented)
+    clearItems(): void;
+    // (undocumented)
+    closeLockedItem(item: Item, opener: NamedOpener): void;
+    // (undocumented)
+    get count(): Integer;
+    // (undocumented)
+    deleteItem(item: Item): void;
+    // (undocumented)
+    deleteItemAtIndex(idx: Integer): void;
+    // (undocumented)
+    deleteItemsAtIndex(idx: Integer, count: Integer): void;
+    // (undocumented)
+    find(predicate: (item: Item) => boolean): Item | undefined;
+    // (undocumented)
+    getAt(idx: Integer): Item;
+    // (undocumented)
+    getItemAtIndexLockCount(index: Integer): Integer;
+    // (undocumented)
+    getItemByKey(key: MapKey): Item | undefined;
+    // (undocumented)
+    getItemLockCount(item: Item): Integer;
+    // (undocumented)
+    getItemLockers(item: Item): readonly NamedLocker[];
+    // (undocumented)
+    getItemOpeners(item: Item): readonly NamedOpener[];
+    // (undocumented)
+    indexOf(item: Item): Integer;
+    // (undocumented)
+    indexOfKey(key: MapKey): Integer;
+    // (undocumented)
+    isAnyItemInRangeLocked(idx: Integer, count: Integer): boolean;
+    // (undocumented)
+    isAnyItemLocked(): boolean;
+    // (undocumented)
+    isItemAtIndexLocked(idx: Integer, ignoreOnlyLocker: NamedLocker | undefined): boolean;
+    // (undocumented)
+    isItemLocked(item: Item, ignoreOnlyLocker: NamedLocker | undefined): boolean;
+    // (undocumented)
+    lockAllItems(locker: LockOpenListItem.Locker): Promise<Result<Item>[]>;
+    // (undocumented)
+    lockItems(items: Item[], locker: LockOpenListItem.Locker): Promise<Result<Item | undefined>[]>;
+    // (undocumented)
+    openLockedItem(item: Item, opener: NamedOpener): void;
+    // (undocumented)
+    subscribeListChangeEvent(handler: LockOpenList.ListChangeEventHandler): MultiEvent.SubscriptionId;
+    // (undocumented)
+    toArray(): readonly Item[];
+    // (undocumented)
+    tryLockItemAtIndex(idx: Integer, locker: LockOpenListItem.Locker): Promise<Result<Item>>;
+    // (undocumented)
+    tryLockItemByKey(key: MapKey, locker: LockOpenListItem.Locker): Promise<Result<Item | undefined>>;
+    // (undocumented)
+    unlockItem(item: Item, locker: LockOpenListItem.Locker): void;
+    // (undocumented)
+    unlockItemAtIndex(idx: Integer, locker: NamedLocker): void;
+    // (undocumented)
+    unlockItems(items: readonly Item[], locker: LockOpenListItem.Locker): void;
+    // (undocumented)
+    unsubscribeListChangeEvent(subscriptionId: MultiEvent.SubscriptionId): void;
+}
+
+// @public (undocumented)
+export namespace LockOpenList {
+    // (undocumented)
+    export type ListChangeEventHandler = (this: void, listChangeTypeId: UsableListChangeTypeId, index: Integer, count: Integer) => void;
+}
+
+// @public (undocumented)
+export interface LockOpenListItem<T> extends MapKeyed, IndexedRecord {
+    // (undocumented)
+    closeLocked(opener: LockOpenListItem.Opener): void;
+    // (undocumented)
+    equals(other: T): boolean;
+    // (undocumented)
+    isLocked(ignoreOnlyLocker: LockOpenListItem.Locker | undefined): boolean;
+    // (undocumented)
+    readonly lockCount: Integer;
+    // (undocumented)
+    readonly lockers: readonly LockOpenListItem.Locker[];
+    // (undocumented)
+    readonly openCount: Integer;
+    // (undocumented)
+    readonly openers: readonly LockOpenListItem.Opener[];
+    // (undocumented)
+    openLocked(opener: LockOpenListItem.Opener): void;
+    // (undocumented)
+    tryLock(locker: LockOpenListItem.Locker): Promise<Result<void>>;
+    // (undocumented)
+    unlock(locker: LockOpenListItem.Locker): void;
+}
+
+// @public (undocumented)
+export namespace LockOpenListItem {
+    // (undocumented)
+    export type Locker = NamedLocker;
+    // (undocumented)
+    export type Opener = NamedOpener;
+}
+
+// @public (undocumented)
+export class LockOpenManager<Item extends LockOpenListItem<Item>> {
+    constructor(_tryFirstLockEventer: LockOpenManager.TryFirstLockEventer, _lastUnlockEventer: LockOpenManager.LastUnlockEventer, _firstOpenEventer: LockOpenManager.FirstOpenEventer, _lastCloseEventer: LockOpenManager.LastCloseEventer);
+    // (undocumented)
+    closeLocked(opener: LockOpenListItem.Opener): void;
+    // (undocumented)
+    isLocked(ignoreOnlyLocker: LockOpenListItem.Locker | undefined): boolean;
+    // (undocumented)
+    isOpened(): boolean;
+    // (undocumented)
+    get lockCount(): number;
+    // (undocumented)
+    get lockers(): readonly LockOpenListItem.Locker[];
+    // (undocumented)
+    get openCount(): number;
+    // (undocumented)
+    get openers(): readonly LockOpenListItem.Opener[];
+    // (undocumented)
+    openLocked(opener: LockOpenListItem.Opener): void;
+    // (undocumented)
+    tryLock(locker: LockOpenListItem.Locker): Promise<Result<void>>;
+    // (undocumented)
+    unlock(locker: LockOpenListItem.Locker): void;
+}
+
+// @public (undocumented)
+export namespace LockOpenManager {
+    // (undocumented)
+    export type FirstOpenEventer = (this: void, firstOpener: LockOpenListItem.Opener) => void;
+    // (undocumented)
+    export type LastCloseEventer = (this: void, lastOpener: LockOpenListItem.Opener) => void;
+    // (undocumented)
+    export type LastUnlockEventer = (this: void, lastLocker: LockOpenListItem.Locker) => void;
+    // (undocumented)
+    export type TryFirstLockEventer = (this: void, firstLocker: LockOpenListItem.Locker) => Promise<Result<void>>;
 }
 
 // @public (undocumented)
@@ -969,6 +1143,12 @@ export const logger: Logger;
 
 // @public (undocumented)
 export type MapKey = string;
+
+// @public (undocumented)
+export interface MapKeyed {
+    // (undocumented)
+    readonly mapKey: MapKey;
+}
 
 // @public (undocumented)
 export interface Mappable {
@@ -1056,6 +1236,15 @@ export namespace MultiEvent {
     // (undocumented)
     export type SubscriptionId = DefinedSubscriptionId | undefined;
 }
+
+// @public (undocumented)
+export interface NamedLocker {
+    // (undocumented)
+    lockerName: string;
+}
+
+// @public (undocumented)
+export type NamedOpener = NamedLocker;
 
 // @public (undocumented)
 export function newDate(value: Date): Date;

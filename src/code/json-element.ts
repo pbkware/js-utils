@@ -1,6 +1,7 @@
 // (c) 2024 Xilytix Pty Ltd
 
 import { Decimal } from 'decimal.js-light';
+import { UnreachableCaseError } from './internal-error';
 import { Err, Ok, Result } from './result';
 import { Guid, Integer, Json, JsonValue } from './types';
 import { dateToDateOnlyIsoString, deepExtendObject } from './utils';
@@ -41,7 +42,7 @@ export class JsonElement {
         return JSON.stringify(this._json);
     }
 
-    parse(jsonText: string): Result<void, JsonElement.ErrorId> {
+    parse(jsonText: string): Result<void, JsonElement.ErrorId.InvalidJsonText> {
         try {
             this._json = JSON.parse(jsonText) as Json;
             return new Ok(undefined);
@@ -55,14 +56,15 @@ export class JsonElement {
         return name in this._json;
     }
 
-    tryGetElement(name: string): Result<JsonElement, JsonElement.ErrorId> {
+    tryGetElement(name: string): Result<JsonElement, JsonElement.ErrorId.ElementIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeObject> {
         const getResult = this.tryGetJsonObject(name);
         if (getResult.isErr()) {
-            const error = getResult.error;
-            if (error === JsonElement.ErrorId.JsonValueIsNotDefined) {
-                return new Err(JsonElement.ErrorId.ElementIsNotDefined);
-            } else {
-                return getResult.createType();
+            const errorId = getResult.error;
+            switch (errorId) {
+                case JsonElement.ErrorId.JsonValueIsNotOfTypeObject: return new Err(errorId);
+                case JsonElement.ErrorId.JsonValueIsNotDefined: return new Err(JsonElement.ErrorId.ElementIsNotDefined);
+                default:
+                    throw new UnreachableCaseError('JETGE67125', errorId);
             }
         } else {
             const jsonObject = getResult.value;
@@ -76,7 +78,7 @@ export class JsonElement {
     }
 
     // eslint-disable-next-line @typescript-eslint/ban-types
-    tryGetNativeObject(name: string): Result<object, JsonElement.ErrorId> {
+    tryGetNativeObject(name: string): Result<object, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeObject> {
         const jsonValue = this._json[name];
         if (JsonValue.isJson(jsonValue)) {
             return new Ok(jsonValue);
@@ -89,7 +91,7 @@ export class JsonElement {
         }
     }
 
-    tryGetJsonObject(name: string): Result<Json, JsonElement.ErrorId> {
+    tryGetJsonObject(name: string): Result<Json, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeObject> {
         const jsonValue = this._json[name];
         if (JsonValue.isJson(jsonValue)) {
             return new Ok(jsonValue);
@@ -97,12 +99,12 @@ export class JsonElement {
             if (jsonValue === undefined) {
                 return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
             } else {
-                return new Err(JsonElement.ErrorId.ElementIsNotAJsonObject);
+                return new Err(JsonElement.ErrorId.JsonValueIsNotOfTypeObject);
             }
         }
     }
 
-    tryGetString(name: string): Result<string, JsonElement.ErrorId> {
+    tryGetString(name: string): Result<string, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeString> {
         const jsonValue = this._json[name];
         if (typeof jsonValue === 'string') {
             return new Ok(jsonValue);
@@ -124,7 +126,7 @@ export class JsonElement {
         }
     }
 
-    getStringOrUndefined(name: string, defaultValue: string) {
+    getStringOrUndefined(name: string) {
         const tryResult = this.tryGetString(name);
         if (tryResult.isOk()) {
             return tryResult.value;
@@ -133,7 +135,7 @@ export class JsonElement {
         }
     }
 
-    tryGetNumber(name: string): Result<number, JsonElement.ErrorId> {
+    tryGetNumber(name: string): Result<number, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeNumber> {
         const jsonValue = this._json[name];
         if (typeof jsonValue === 'number') {
             return new Ok(jsonValue);
@@ -155,7 +157,7 @@ export class JsonElement {
         }
     }
 
-    getNumberOrUndefined(name: string, defaultValue: number) {
+    getNumberOrUndefined(name: string) {
         const tryResult = this.tryGetNumber(name);
         if (tryResult.isOk()) {
             return tryResult.value;
@@ -164,7 +166,7 @@ export class JsonElement {
         }
     }
 
-    tryGetBoolean(name: string): Result<boolean, JsonElement.ErrorId> {
+    tryGetBoolean(name: string): Result<boolean, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeBoolean> {
         const jsonValue = this._json[name];
         if (typeof jsonValue === 'boolean') {
             return new Ok(jsonValue);
@@ -195,7 +197,7 @@ export class JsonElement {
         }
     }
 
-    tryGetElementArray(name: string): Result<JsonElement[], JsonElement.ErrorId> {
+    tryGetElementArray(name: string): Result<JsonElement[], JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotAnObject> {
         const jsonValue = this._json[name];
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (jsonValue === undefined) {
@@ -221,7 +223,7 @@ export class JsonElement {
         }
     }
 
-    tryGetJsonObjectArray(name: string): Result<Json[], JsonElement.ErrorId> {
+    tryGetJsonObjectArray(name: string): Result<Json[], JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotJson> {
         const jsonValue = this._json[name];
         if (jsonValue === undefined) {
             return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
@@ -246,7 +248,7 @@ export class JsonElement {
         }
     }
 
-    tryGetStringArray(name: string): Result<string[], JsonElement.ErrorId> {
+    tryGetStringArray(name: string): Result<string[], JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotAString> {
         const jsonValue = this._json[name];
         if (jsonValue === undefined) {
             return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
@@ -271,7 +273,7 @@ export class JsonElement {
         }
     }
 
-    tryGetNumberArray(name: string): Result<number[], JsonElement.ErrorId> {
+    tryGetNumberArray(name: string): Result<number[], JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotANumber> {
         const jsonValue = this._json[name];
         if (jsonValue === undefined) {
             return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
@@ -296,7 +298,7 @@ export class JsonElement {
         }
     }
 
-    tryGetBooleanArray(name: string): Result<boolean[], JsonElement.ErrorId> {
+    tryGetBooleanArray(name: string): Result<boolean[], JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotABoolean> {
         const jsonValue = this._json[name];
         if (jsonValue === undefined) {
             return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
@@ -321,7 +323,7 @@ export class JsonElement {
         }
     }
 
-    tryGetAnyJsonValueArray(name: string): Result<JsonValue[], JsonElement.ErrorId> {
+    tryGetAnyJsonValueArray(name: string): Result<JsonValue[], JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotAnArray> {
         const jsonValue = this._json[name];
         if (jsonValue === undefined) {
             return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
@@ -334,7 +336,7 @@ export class JsonElement {
         }
     }
 
-    tryGetInteger(name: string): Result<Integer, JsonElement.ErrorId> {
+    tryGetInteger(name: string): Result<Integer, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeNumber> {
         return this.tryGetNumber(name);
     }
 
@@ -348,7 +350,7 @@ export class JsonElement {
         return tryResult.isErr() ? undefined : tryResult.value;
     }
 
-    tryGetDate(name: string): Result<Date, JsonElement.ErrorId> {
+    tryGetDate(name: string): Result<Date, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeString> {
         const getStringResult = this.tryGetString(name);
         if (getStringResult.isErr()) {
             return getStringResult.createType();
@@ -364,7 +366,7 @@ export class JsonElement {
         return tryResult.isErr() ? defaultValue : tryResult.value;
     }
 
-    tryGetDateTime(name: string): Result<Date, JsonElement.ErrorId> {
+    tryGetDateTime(name: string): Result<Date, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeString> {
         const getStringResult = this.tryGetString(name);
         if (getStringResult.isErr()) {
             return getStringResult.createType();
@@ -380,7 +382,7 @@ export class JsonElement {
         return tryResult.isErr() ? defaultValue : tryResult.value;
     }
 
-    tryGetGuid(name: string): Result<Guid, JsonElement.ErrorId> {
+    tryGetGuid(name: string): Result<Guid, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeString> {
         return this.tryGetString(name);
     }
 
@@ -389,7 +391,7 @@ export class JsonElement {
         return tryResult.isErr() ? defaultValue : tryResult.value;
     }
 
-    tryGetDecimal(name: string): Result<Decimal, JsonElement.ErrorId> {
+    tryGetDecimal(name: string): Result<Decimal, JsonElement.ErrorId.InvalidDecimal | JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString> {
         const jsonValue = this._json[name];
         if (typeof jsonValue === 'string') {
             try {
@@ -588,7 +590,6 @@ export namespace JsonElement {
     export const enum ErrorId {
         InvalidJsonText,
         ElementIsNotDefined,
-        ElementIsNotAJsonObject,
         JsonValueIsNotDefined,
         JsonValueIsNotOfTypeObject,
         JsonValueIsNotOfTypeString,
