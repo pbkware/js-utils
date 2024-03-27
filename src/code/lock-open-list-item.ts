@@ -6,13 +6,13 @@ import { Result } from './result';
 import { IndexedRecord, Integer } from './types';
 
 /** @public */
-export interface LockOpenListItem<T> extends MapKeyed, IndexedRecord {
+export interface LockOpenListItem<T, Error = string> extends MapKeyed, IndexedRecord {
     readonly lockCount: Integer;
     readonly lockers: readonly LockOpenListItem.Locker[];
     readonly openCount: Integer;
     readonly openers: readonly LockOpenListItem.Opener[];
 
-    tryLock(locker: LockOpenListItem.Locker): Promise<Result<void>>;
+    tryLock(locker: LockOpenListItem.Locker): Promise<Result<void, Error>>;
     openLocked(opener: LockOpenListItem.Opener): void;
     closeLocked(opener: LockOpenListItem.Opener): void;
     unlock(locker: LockOpenListItem.Locker): void;

@@ -942,71 +942,11 @@ export const enum ListChangeTypeId {
 }
 
 // @public (undocumented)
-export interface LockOpenList<Item extends LockOpenListItem<Item>> {
+export interface LockOpenList<Item extends LockOpenListItem<Item, Error>, Error = string> {
     // (undocumented)
-    addItem(item: Item): void;
-    // (undocumented)
-    addItems(items: Item[], addCount?: Integer): void;
-    // (undocumented)
-    clearItems(): void;
-    // (undocumented)
-    closeLockedItem(item: Item, opener: NamedOpener): void;
-    // (undocumented)
-    get count(): Integer;
-    // (undocumented)
-    deleteItem(item: Item): void;
-    // (undocumented)
-    deleteItemAtIndex(idx: Integer): void;
-    // (undocumented)
-    deleteItemsAtIndex(idx: Integer, count: Integer): void;
-    // (undocumented)
-    find(predicate: (item: Item) => boolean): Item | undefined;
-    // (undocumented)
-    getAt(idx: Integer): Item;
-    // (undocumented)
-    getItemAtIndexLockCount(index: Integer): Integer;
-    // (undocumented)
-    getItemByKey(key: MapKey): Item | undefined;
-    // (undocumented)
-    getItemLockCount(item: Item): Integer;
-    // (undocumented)
-    getItemLockers(item: Item): readonly NamedLocker[];
-    // (undocumented)
-    getItemOpeners(item: Item): readonly NamedOpener[];
-    // (undocumented)
-    indexOf(item: Item): Integer;
-    // (undocumented)
-    indexOfKey(key: MapKey): Integer;
-    // (undocumented)
-    isAnyItemInRangeLocked(idx: Integer, count: Integer): boolean;
-    // (undocumented)
-    isAnyItemLocked(): boolean;
-    // (undocumented)
-    isItemAtIndexLocked(idx: Integer, ignoreOnlyLocker: NamedLocker | undefined): boolean;
-    // (undocumented)
-    isItemLocked(item: Item, ignoreOnlyLocker: NamedLocker | undefined): boolean;
-    // (undocumented)
-    lockAllItems(locker: LockOpenListItem.Locker): Promise<Result<Item>[]>;
-    // (undocumented)
-    lockItems(items: Item[], locker: LockOpenListItem.Locker): Promise<Result<Item | undefined>[]>;
-    // (undocumented)
-    openLockedItem(item: Item, opener: NamedOpener): void;
-    // (undocumented)
-    subscribeListChangeEvent(handler: LockOpenList.ListChangeEventHandler): MultiEvent.SubscriptionId;
-    // (undocumented)
-    toArray(): readonly Item[];
-    // (undocumented)
-    tryLockItemAtIndex(idx: Integer, locker: LockOpenListItem.Locker): Promise<Result<Item>>;
-    // (undocumented)
-    tryLockItemByKey(key: MapKey, locker: LockOpenListItem.Locker): Promise<Result<Item | undefined>>;
+    tryLockItemByKey(key: MapKey, locker: LockOpenListItem.Locker): Promise<Result<Item | undefined, Error>>;
     // (undocumented)
     unlockItem(item: Item, locker: LockOpenListItem.Locker): void;
-    // (undocumented)
-    unlockItemAtIndex(idx: Integer, locker: NamedLocker): void;
-    // (undocumented)
-    unlockItems(items: readonly Item[], locker: LockOpenListItem.Locker): void;
-    // (undocumented)
-    unsubscribeListChangeEvent(subscriptionId: MultiEvent.SubscriptionId): void;
 }
 
 // @public (undocumented)
@@ -1016,7 +956,7 @@ export namespace LockOpenList {
 }
 
 // @public (undocumented)
-export interface LockOpenListItem<T> extends MapKeyed, IndexedRecord {
+export interface LockOpenListItem<T, Error = string> extends MapKeyed, IndexedRecord {
     // (undocumented)
     closeLocked(opener: LockOpenListItem.Opener): void;
     // (undocumented)
@@ -1034,7 +974,7 @@ export interface LockOpenListItem<T> extends MapKeyed, IndexedRecord {
     // (undocumented)
     openLocked(opener: LockOpenListItem.Opener): void;
     // (undocumented)
-    tryLock(locker: LockOpenListItem.Locker): Promise<Result<void>>;
+    tryLock(locker: LockOpenListItem.Locker): Promise<Result<void, Error>>;
     // (undocumented)
     unlock(locker: LockOpenListItem.Locker): void;
 }
@@ -1048,8 +988,8 @@ export namespace LockOpenListItem {
 }
 
 // @public (undocumented)
-export class LockOpenManager<Item extends LockOpenListItem<Item>> {
-    constructor(_tryFirstLockEventer: LockOpenManager.TryFirstLockEventer, _lastUnlockEventer: LockOpenManager.LastUnlockEventer, _firstOpenEventer: LockOpenManager.FirstOpenEventer, _lastCloseEventer: LockOpenManager.LastCloseEventer);
+export class LockOpenManager<Item extends LockOpenListItem<Item, Error>, Error = string> {
+    constructor(_tryFirstLockEventer: LockOpenManager.TryFirstLockEventer<Error>, _lastUnlockEventer: LockOpenManager.LastUnlockEventer, _firstOpenEventer: LockOpenManager.FirstOpenEventer, _lastCloseEventer: LockOpenManager.LastCloseEventer);
     // (undocumented)
     closeLocked(opener: LockOpenListItem.Opener): void;
     // (undocumented)
@@ -1067,7 +1007,7 @@ export class LockOpenManager<Item extends LockOpenListItem<Item>> {
     // (undocumented)
     openLocked(opener: LockOpenListItem.Opener): void;
     // (undocumented)
-    tryLock(locker: LockOpenListItem.Locker): Promise<Result<void>>;
+    tryLock(locker: LockOpenListItem.Locker): Promise<Result<void, Error>>;
     // (undocumented)
     unlock(locker: LockOpenListItem.Locker): void;
 }
@@ -1081,7 +1021,7 @@ export namespace LockOpenManager {
     // (undocumented)
     export type LastUnlockEventer = (this: void, lastLocker: LockOpenListItem.Locker) => void;
     // (undocumented)
-    export type TryFirstLockEventer = (this: void, firstLocker: LockOpenListItem.Locker) => Promise<Result<void>>;
+    export type TryFirstLockEventer<Error = string> = (this: void, firstLocker: LockOpenListItem.Locker) => Promise<Result<void, Error>>;
 }
 
 // @public (undocumented)

@@ -5,12 +5,12 @@ import { LockOpenListItem } from './lock-open-list-item';
 import { Ok, Result } from './result';
 
 /** @public */
-export class LockOpenManager<Item extends LockOpenListItem<Item>> {
+export class LockOpenManager<Item extends LockOpenListItem<Item, Error>, Error = string> {
     private readonly _lockers = new Array<LockOpenListItem.Locker>(0);
     private readonly _openers = new Array<LockOpenListItem.Opener>(0);
 
     constructor(
-        private readonly _tryFirstLockEventer: LockOpenManager.TryFirstLockEventer,
+        private readonly _tryFirstLockEventer: LockOpenManager.TryFirstLockEventer<Error>,
         private readonly _lastUnlockEventer: LockOpenManager.LastUnlockEventer,
         private readonly _firstOpenEventer: LockOpenManager.FirstOpenEventer,
         private readonly _lastCloseEventer: LockOpenManager.LastCloseEventer,
@@ -23,7 +23,7 @@ export class LockOpenManager<Item extends LockOpenListItem<Item>> {
     get openCount() { return this._openers.length; }
     get openers(): readonly LockOpenListItem.Opener[] { return this._openers; }
 
-    async tryLock(locker: LockOpenListItem.Locker): Promise<Result<void>> {
+    async tryLock(locker: LockOpenListItem.Locker): Promise<Result<void, Error>> {
         this._lockers.push(locker);
         if (this._lockers.length === 1) {
             const processFirstLockResult = await this._tryFirstLockEventer(locker);
@@ -89,7 +89,7 @@ export class LockOpenManager<Item extends LockOpenListItem<Item>> {
 
 /** @public */
 export namespace LockOpenManager {
-    export type TryFirstLockEventer = (this: void, firstLocker: LockOpenListItem.Locker) => Promise<Result<void>>;
+    export type TryFirstLockEventer<Error = string> = (this: void, firstLocker: LockOpenListItem.Locker) => Promise<Result<void, Error>>;
     export type LastUnlockEventer = (this: void, lastLocker: LockOpenListItem.Locker) => void;
     export type FirstOpenEventer = (this: void, firstOpener: LockOpenListItem.Opener) => void;
     export type LastCloseEventer = (this: void, lastOpener: LockOpenListItem.Opener) => void;
