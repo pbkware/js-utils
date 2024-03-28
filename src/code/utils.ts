@@ -730,6 +730,11 @@ export function deepExtendValue(existingTarget: unknown, value: unknown): unknow
 }
 
 /** @public */
+export function deepClone(object: Record<string, unknown>) {
+    return deepExtendValue({}, object);
+}
+
+/** @public */
 export function isUndefinableStringNumberBooleanNestArrayEqual(left: unknown[] | undefined, right: unknown[] | undefined) {
     if (left === undefined) {
         return right === undefined;
@@ -1294,18 +1299,22 @@ export function dateToDateOnlyIsoString(value: Date) {
 }
 
 /** @public */
-export function moveElementInArray<T>(array: T[], fromIndex: Integer, toIndex: Integer) {
-    const element = array[fromIndex];
-    if (fromIndex < toIndex) {
+export function moveElementInArray<T>(array: T[], fromIndex: number, toIndex: number) {
+    if (toIndex > fromIndex) {
+        const item = array[fromIndex];
         for (let i = fromIndex; i < toIndex; i++) {
             array[i] = array[i + 1];
         }
+        array[toIndex] = item;
     } else {
-        for (let i = fromIndex; i > toIndex; i--) {
-            array[i] = array[i - 1];
+        if (toIndex < fromIndex) {
+            const item = array[fromIndex];
+            for (let i = fromIndex; i > toIndex; i--) {
+                array[i] = array[i - 1];
+            }
+            array[toIndex] = item;
         }
     }
-    array[toIndex] = element;
 }
 
 /** @public */

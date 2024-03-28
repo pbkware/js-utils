@@ -23,6 +23,61 @@ export function addToCapacitisedArrayUniquely<T>(target: T[], count: Integer, ad
 // @public (undocumented)
 export function addToGrow15ArrayUniquely<T>(target: T[], count: Integer, addition: readonly T[]): number;
 
+// @public (undocumented)
+export class AnchoredRecordsList<Record extends AnchoredRecordsList.Record> implements RecordList<Record> {
+    // (undocumented)
+    get anchoredRecordCount(): number;
+    // (undocumented)
+    areAllIndexedRecordsAnchored(recordIndices: Integer[]): boolean;
+    // (undocumented)
+    areSortedIndexedRecordsAllAtEnd(sortedRecordIndices: Integer[]): boolean;
+    // (undocumented)
+    areSortedIndexedRecordsAllAtStart(sortedRecordIndices: Integer[]): boolean;
+    // (undocumented)
+    assign(newRecords: readonly Record[], anchoredCount: Integer): void;
+    // (undocumented)
+    clear(): void;
+    // (undocumented)
+    get count(): number;
+    // (undocumented)
+    getAt(index: number): Record;
+    // (undocumented)
+    indexOf(record: Record): Integer;
+    // (undocumented)
+    insert(index: Integer, records: Record[]): void;
+    // (undocumented)
+    move(fromIndex: Integer, toIndex: Integer, count: Integer): void;
+    // (undocumented)
+    moveIndexedRecordsOnePositionTowardsEndWithSquash(moveIndices: Integer[]): void;
+    // (undocumented)
+    moveIndexedRecordsOnePositionTowardsStartWithSquash(moveIndices: Integer[]): void;
+    // (undocumented)
+    moveIndexedRecordsToEnd(moveIndices: Integer[]): void;
+    // (undocumented)
+    moveIndexedRecordsToStart(moveIndices: Integer[]): void;
+    // (undocumented)
+    get records(): readonly Record[];
+    // (undocumented)
+    remove(index: Integer, count: Integer): void;
+    // (undocumented)
+    removeIndexedRecords(removeIndices: Integer[]): void;
+    // (undocumented)
+    subscribeListChangeEvent(handler: RecordList.ListChangeEventHandler): number;
+    // (undocumented)
+    toArray(): readonly Record[];
+    // (undocumented)
+    unsubscribeListChangeEvent(subscriptionId: MultiEvent.SubscriptionId): void;
+}
+
+// @public (undocumented)
+export namespace AnchoredRecordsList {
+    // (undocumented)
+    export interface Record extends IndexedRecord {
+        // (undocumented)
+        anchored: boolean;
+    }
+}
+
 // @public
 export function anyBinarySearch<T>(values: T[], item: T, compare: CompareFtn<T>): BinarySearchResult;
 
@@ -427,6 +482,9 @@ export const enum DayOfWeek {
 export { Decimal }
 
 // @public (undocumented)
+export function deepClone(object: Record<string, unknown>): unknown;
+
+// @public (undocumented)
 export function deepExtendObject(target: Record<string, unknown>, obj: Record<string, unknown> | undefined): Record<string, unknown>;
 
 // @public (undocumented)
@@ -575,7 +633,7 @@ export type Integer = number;
 
 // @public (undocumented)
 export abstract class InternalError extends Error {
-    constructor(errorType: string, code: string, message?: string);
+    constructor(code: string, message: string | undefined, errorType: string);
     // (undocumented)
     readonly code: string;
 }
@@ -942,17 +1000,11 @@ export const enum ListChangeTypeId {
 }
 
 // @public (undocumented)
-export interface LockOpenList<Item extends LockOpenListItem<Item, Error>, Error = string> {
+export interface LockItemByKeyList<Item extends LockOpenListItem<Item, Error>, Error = string> {
     // (undocumented)
     tryLockItemByKey(key: MapKey, locker: LockOpenListItem.Locker): Promise<Result<Item | undefined, Error>>;
     // (undocumented)
     unlockItem(item: Item, locker: LockOpenListItem.Locker): void;
-}
-
-// @public (undocumented)
-export namespace LockOpenList {
-    // (undocumented)
-    export type ListChangeEventHandler = (this: void, listChangeTypeId: UsableListChangeTypeId, index: Integer, count: Integer) => void;
 }
 
 // @public (undocumented)
@@ -1128,7 +1180,7 @@ export const enum ModifierKeyId {
 }
 
 // @public (undocumented)
-export function moveElementInArray<T>(array: T[], fromIndex: Integer, toIndex: Integer): void;
+export function moveElementInArray<T>(array: T[], fromIndex: number, toIndex: number): void;
 
 // @public (undocumented)
 export function moveElementsInArray<T>(array: T[], fromIndex: Integer, toIndex: Integer, count: Integer): void;
@@ -1504,8 +1556,13 @@ export class UnexpectedUndefinedError extends InternalError {
 export function uniqueElementArraysOverlap<T>(left: readonly T[], right: readonly T[]): boolean;
 
 // @public (undocumented)
-export class UnreachableCaseError extends InternalError {
+export class UnreachableCaseError extends UnreachableCaseInternalError {
     constructor(code: string, value: never, errorText?: string);
+}
+
+// @public (undocumented)
+export class UnreachableCaseInternalError extends InternalError {
+    constructor(code: string, value: never, errorText: string | undefined, errorType: string);
 }
 
 // @public (undocumented)
