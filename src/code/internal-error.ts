@@ -4,7 +4,7 @@ import { logger } from './logger';
 
 /** @public */
 export abstract class InternalError extends Error {
-    constructor(errorType: string, readonly code: string, message?: string) {
+    constructor(readonly code: string, message: string | undefined, errorType: string) {
         super(message === undefined || message === '' ?
             `${errorType}: ${code}`
             :
@@ -69,7 +69,7 @@ export namespace InternalError {
 /** @public */
 export class AssertInternalError extends InternalError {
     constructor(code: string, message?: string) {
-        super('Assert', code, message);
+        super(code, message, 'Assert');
     }
 }
 
@@ -127,45 +127,51 @@ export namespace AssertInternalError {
 /** @public */
 export class NotImplementedError extends InternalError {
     constructor(code: string) {
-        super('NotImplemented', code);
+        super(code, undefined, 'NotImplemented');
     }
 }
 
 /** @public */
 export class UnexpectedUndefinedError extends InternalError {
     constructor(code: string, message?: string) {
-        super('UnexpectedUndefined', code, message);
+        super(code, message, 'UnexpectedUndefined');
     }
 }
 
 /** @public */
 export class UnexpectedTypeError extends InternalError {
     constructor(code: string, message: string) {
-        super('UnexpectedType', code, message);
+        super(code, message, 'UnexpectedType');
     }
 }
 
 /** @public */
-export class UnreachableCaseError extends InternalError {
-    constructor(code: string, value: never, errorText?: string) {
+export class UnreachableCaseInternalError extends InternalError {
+    constructor(code: string, value: never, errorText: string | undefined, errorType: string) {
         if (errorText === undefined) {
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            errorText = `"${value}"`;
+            errorText = `"${String(value)}"`;
         }
-        super('UnreachableCase', code, errorText);
+        super(code, errorText, errorType);
+    }
+}
+
+/** @public */
+export class UnreachableCaseError extends UnreachableCaseInternalError {
+    constructor(code: string, value: never, errorText?: string) {
+        super(code, value, errorText, 'UnreachableCase');
     }
 }
 
 /** @public */
 export class UnexpectedCaseError extends InternalError {
     constructor(code: string, message?: string) {
-        super('UnexpectedCase', code, message);
+        super(code, message, 'UnexpectedCase');
     }
 }
 
 /** @public */
 export class EnumInfoOutOfOrderError extends InternalError {
     constructor(enumName: string, outOfOrderInfoElementIndex: number, infoDescription: string) {
-        super('EnumInfoOutOfOrder', enumName,  `${outOfOrderInfoElementIndex}: ${infoDescription.substring(0, 100)}`);
+        super(enumName,  `${outOfOrderInfoElementIndex}: ${infoDescription.substring(0, 100)}`, 'EnumInfoOutOfOrder');
     }
 }
