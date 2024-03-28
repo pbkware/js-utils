@@ -1,5 +1,6 @@
 // (c) 2024 Xilytix Pty Ltd
 
+export * from './anchored-records-list';
 export * from './change-subscribable-comparable-list';
 export * from './comma-text';
 export * from './comparable-list';
@@ -8,7 +9,7 @@ export * from './html-types';
 export * from './internal-error';
 export * from './iso8601';
 export * from './json-element';
-export * from './lock-open-list';
+export * from './lock-item-by-key-list';
 export * from './lock-open-list-item';
 export * from './lock-open-manager';
 export * from './logger';
