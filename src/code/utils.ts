@@ -1412,8 +1412,8 @@ export function getUniqueElementArraysOverlapElements<T>(left: readonly T[], rig
 export function getElementDocumentPosition(element: HTMLElement): { left: number; top: number } {
     const domRect = element.getBoundingClientRect();
     return {
-        left: domRect.left + window.scrollX,
-        top: domRect.top + window.scrollY,
+        left: domRect.left + globalThis.scrollX,
+        top: domRect.top + globalThis.scrollY,
     };
 
 
@@ -1447,8 +1447,8 @@ export function getElementDocumentPosition(element: HTMLElement): { left: number
 export function getElementDocumentPositionRect(element: HTMLElement): Rect {
     const domRect = element.getBoundingClientRect();
     return {
-        left: domRect.left + window.scrollX,
-        top: domRect.top + window.scrollY,
+        left: domRect.left + globalThis.scrollX,
+        top: domRect.top + globalThis.scrollY,
         width: domRect.width,
         height: domRect.height,
     };
