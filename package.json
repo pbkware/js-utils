@@ -1,6 +1,6 @@
 {
   "name": "@xilytix/sysutils",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Xilytix System types, constants and utilities",
   "repository": {
     "type": "git",
