@@ -13,7 +13,7 @@ export * from './lock-item-by-key-list';
 export * from './lock-open-list-item';
 export * from './lock-open-manager';
 export * from './logger';
-export * from './map-keyed';
+export * from './mapped-comparable-list';
 export * from './modifier-key';
 export * from './multi-event';
 export * from './named-locker';

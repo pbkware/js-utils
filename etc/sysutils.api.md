@@ -135,7 +135,11 @@ export class ChangeSubscribableComparableList<out T extends U, in U = T> extends
     // (undocumented)
     moveRange(fromIndex: Integer, toIndex: Integer, count: Integer): void;
     // (undocumented)
+    protected noNotifySetAt(index: Integer, value: T): void;
+    // (undocumented)
     protected notifyListChange(listChangeTypeId: UsableListChangeTypeId, index: Integer, count: Integer): void;
+    // (undocumented)
+    remove(value: T): void;
     // (undocumented)
     removeAtIndex(index: Integer): void;
     // (undocumented)
@@ -1008,7 +1012,7 @@ export interface LockItemByKeyList<Item extends LockOpenListItem<Item, Error>, E
 }
 
 // @public (undocumented)
-export interface LockOpenListItem<T, Error = string> extends MapKeyed, IndexedRecord {
+export interface LockOpenListItem<T, Error = string> extends Mappable, IndexedRecord {
     // (undocumented)
     closeLocked(opener: LockOpenListItem.Opener): void;
     // (undocumented)
@@ -1137,15 +1141,72 @@ export const logger: Logger;
 export type MapKey = string;
 
 // @public (undocumented)
-export interface MapKeyed {
+export interface Mappable {
     // (undocumented)
     readonly mapKey: MapKey;
 }
 
 // @public (undocumented)
-export interface Mappable {
+export class MappedComparableList<out T extends (Mappable & U), in U = T> extends ChangeSubscribableComparableList<T, U> {
     // (undocumented)
-    readonly mapKey: MapKey;
+    add(value: T): number;
+    // (undocumented)
+    addRange(values: readonly T[]): void;
+    // (undocumented)
+    addSubRange(values: readonly T[], subRangeStartIndex: Integer, subRangeLength: Integer): void;
+    // (undocumented)
+    addUndefinedRange(undefinedValueCount: Integer): void;
+    // (undocumented)
+    clear(): void;
+    // (undocumented)
+    clone(): MappedComparableList<T, U>;
+    // (undocumented)
+    contains(value: T): boolean;
+    // (undocumented)
+    duplicateErrorText: string;
+    // (undocumented)
+    extract(value: T): T;
+    // (undocumented)
+    getItemByKey(key: MapKey): T | undefined;
+    // (undocumented)
+    indexOfKey(key: MapKey): Integer;
+    // (undocumented)
+    insert(index: Integer, value: T): void;
+    // (undocumented)
+    insertRange(index: Integer, values: readonly T[]): void;
+    // (undocumented)
+    insertSubRange(index: Integer, values: readonly T[], subRangeStartIndex: Integer, subRangeLength: Integer): void;
+    // (undocumented)
+    onDuplicate: MappedComparableList.OnDuplicate;
+    // (undocumented)
+    remove(value: T): void;
+    // (undocumented)
+    removeAtIndex(index: Integer): void;
+    // (undocumented)
+    removeAtIndices(removeIndices: Integer[]): void;
+    // (undocumented)
+    removeItems(removeItems: readonly T[]): void;
+    // (undocumented)
+    removeRange(index: Integer, deleteCount: Integer): void;
+    // (undocumented)
+    setAt(index: Integer, value: T): void;
+}
+
+// @public (undocumented)
+export namespace MappedComparableList {
+    // (undocumented)
+    export class DuplicateError extends InternalError {
+        constructor(code: string, message: string);
+    }
+    // (undocumented)
+    export const enum OnDuplicate {
+        // (undocumented)
+        Error = 2,
+        // (undocumented)
+        Ignore = 1,
+        // (undocumented)
+        Never = 0
+    }
 }
 
 // @public (undocumented)

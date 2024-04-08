@@ -62,6 +62,11 @@ export class ChangeSubscribableComparableList<out T extends U, in U = T> extends
         this.notifyListChange(UsableListChangeTypeId.Insert, subRangeStartIndex, subRangeCount);
     }
 
+    override remove(value: T) {
+        const index = this.indexOf(value);
+        this.removeAtIndex(index);
+    }
+
     override removeAtIndex(index: Integer) {
         this.notifyListChange(UsableListChangeTypeId.Remove, index, 1);
         super.removeAtIndex(index);
@@ -126,6 +131,10 @@ export class ChangeSubscribableComparableList<out T extends U, in U = T> extends
 
     unsubscribeListChangeEvent(subscriptionId: MultiEvent.SubscriptionId): void {
         this._listChangeMultiEvent.unsubscribe(subscriptionId);
+    }
+
+    protected noNotifySetAt(index: Integer, value: T) {
+        super.setAt(index, value);
     }
 
     protected notifyListChange(listChangeTypeId: UsableListChangeTypeId, index: Integer, count: Integer) {
