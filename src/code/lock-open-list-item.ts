@@ -1,12 +1,11 @@
 // (c) 2024 Xilytix Pty Ltd
 
-import { MapKeyed } from './map-keyed';
 import { NamedLocker, NamedOpener } from './named-locker';
 import { Result } from './result';
-import { IndexedRecord, Integer } from './types';
+import { IndexedRecord, Integer, Mappable } from './types';
 
 /** @public */
-export interface LockOpenListItem<T, Error = string> extends MapKeyed, IndexedRecord {
+export interface LockOpenListItem<T, Error = string> extends Mappable, IndexedRecord {
     readonly lockCount: Integer;
     readonly lockers: readonly LockOpenListItem.Locker[];
     readonly openCount: Integer;
