@@ -1,10 +1,10 @@
 // (c) 2024 Xilytix Pty Ltd
 
-import { Decimal } from 'decimal.js-light';
 import { UnreachableCaseError } from './internal-error';
 import { Err, Ok, Result } from './result';
 import { Guid, Integer, Json, JsonValue } from './types';
 import { dateToDateOnlyIsoString, deepExtendObject } from './utils';
+import { newDecimal, SysDecimal } from './sys-decimal';
 
 /** @public */
 export class JsonElement {
@@ -391,11 +391,11 @@ export class JsonElement {
         return tryResult.isErr() ? defaultValue : tryResult.value;
     }
 
-    tryGetDecimal(name: string): Result<Decimal, JsonElement.ErrorId.InvalidDecimal | JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString> {
+    tryGetDecimal(name: string): Result<SysDecimal, JsonElement.ErrorId.InvalidDecimal | JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString> {
         const jsonValue = this._json[name];
         if (typeof jsonValue === 'string') {
             try {
-                const value = new Decimal(jsonValue);
+                const value = newDecimal(jsonValue);
                 return new Ok(value);
             } catch (e) {
                 return new Err(JsonElement.ErrorId.InvalidDecimal);
@@ -409,7 +409,7 @@ export class JsonElement {
         }
     }
 
-    getDecimal(name: string, defaultValue: Decimal) {
+    getDecimal(name: string, defaultValue: SysDecimal) {
         const tryResult = this.tryGetDecimal(name);
         return tryResult.isErr() ? defaultValue : tryResult.value;
     }
@@ -515,7 +515,7 @@ export class JsonElement {
         }
     }
 
-    setDecimal(name: string, value: Decimal | undefined) {
+    setDecimal(name: string, value: SysDecimal | undefined) {
         if (value !== undefined) {
             this._json[name] = value.toJSON();
         }

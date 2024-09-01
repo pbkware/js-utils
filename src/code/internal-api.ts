@@ -22,6 +22,7 @@ export * from './result';
 export * from './source-tz-offset-date';
 export * from './source-tz-offset-date-time';
 export * from './string-builder';
+export * from './sys-decimal';
 export * from './types';
 export * from './usable-list-change-type';
 export * from './utils';
