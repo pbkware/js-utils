@@ -1,6 +1,8 @@
 // (c) 2024 Xilytix Pty Ltd
 
 export * from './anchored-records-list';
+export * from './binary-find';
+export * from './binary-search';
 export * from './change-subscribable-comparable-list';
 export * from './comma-text';
 export * from './comparable-list';
@@ -26,5 +28,4 @@ export * from './sys-decimal';
 export * from './types';
 export * from './usable-list-change-type';
 export * from './utils';
-export * from './utils-search';
 

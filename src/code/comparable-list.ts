@@ -1,9 +1,10 @@
 // (c) 2024 Xilytix Pty Ltd
 
+import { BinaryFind } from './binary-find';
+import { BinarySearchResult, CompareFtn, rangedAnyBinarySearch, rangedEarliestBinarySearch, rangedLatestBinarySearch, rangedQuickSort } from './binary-search';
 import { AssertInternalError } from './internal-error';
 import { ComparisonResult, Integer } from './types';
 import { moveElementInArray, moveElementsInArray } from './utils';
-import { BinarySearchResult, CompareFtn, rangedAnyBinarySearch, rangedEarliestBinarySearch, rangedLatestBinarySearch, rangedQuickSort } from './utils-search';
 
 /** @public */
 export class ComparableList<out T extends U, in U = T> {
@@ -46,6 +47,10 @@ export class ComparableList<out T extends U, in U = T> {
 
     toArray(): T[] {
         return this.items.slice(0, this.count);
+    }
+
+    rangeToArray(index: Integer, count: Integer): T[] {
+        return this.items.slice(index, index + count);
     }
 
     add(value: T) {
@@ -343,6 +348,18 @@ export class ComparableList<out T extends U, in U = T> {
         }
 
         return rangedAnyBinarySearch(this.items, item, compareItemsFtn, 0, this._count);
+    }
+
+    binaryFindEarliest(compareToFn: BinaryFind.CompareItemFn<T>): BinaryFind.Result {
+        return BinaryFind.rangedEarliest(this.items, compareToFn, 0, this._count);
+    }
+
+    binaryFindLatest(compareToFn: BinaryFind.CompareItemFn<T>): BinaryFind.Result {
+        return BinaryFind.rangedLatest(this.items, compareToFn, 0, this._count);
+    }
+
+    binaryFindAny(compareToFn: BinaryFind.CompareItemFn<T>): BinaryFind.Result {
+        return BinaryFind.rangedAny(this.items, compareToFn, 0, this._count);
     }
 
     trimExcess() {

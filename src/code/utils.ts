@@ -64,7 +64,7 @@ export function numberToPixels(value: number) {
 }
 
 /** @public */
-export function compareValue<T extends number | string>(left: T, right: T) {
+export function compareValue<T extends number | string>(left: T, right: T): ComparisonResult {
     if (left < right) {
         return ComparisonResult.LeftLessThanRight;
     } else {
@@ -77,7 +77,7 @@ export function compareValue<T extends number | string>(left: T, right: T) {
 }
 
 /** @public */
-export function compareNumber(left: number, right: number) {
+export function compareNumber(left: number, right: number): ComparisonResult {
     if (left < right) {
         return ComparisonResult.LeftLessThanRight;
     } else {
@@ -90,7 +90,7 @@ export function compareNumber(left: number, right: number) {
 }
 
 /** @public */
-export function compareUndefinableNumber(left: number | undefined, right: number | undefined, undefinedIsLowest: boolean) {
+export function compareUndefinableNumber(left: number | undefined, right: number | undefined, undefinedIsLowest: boolean): ComparisonResult {
     if (left === undefined) {
         if (right === undefined) {
             return ComparisonResult.LeftEqualsRight;
@@ -107,7 +107,7 @@ export function compareUndefinableNumber(left: number | undefined, right: number
 }
 
 /** @public */
-export function compareInteger(left: Integer, right: Integer) {
+export function compareInteger(left: Integer, right: Integer): ComparisonResult {
     if (left < right) {
         return ComparisonResult.LeftLessThanRight;
     } else {
@@ -120,7 +120,7 @@ export function compareInteger(left: Integer, right: Integer) {
 }
 
 /** @public */
-export function priorityCompareInteger(left: Integer, right: Integer, priority: Integer) {
+export function priorityCompareInteger(left: Integer, right: Integer, priority: Integer): ComparisonResult {
     if (left === priority) {
         return right === priority ? ComparisonResult.LeftEqualsRight : ComparisonResult.LeftLessThanRight;
     } else {
@@ -141,7 +141,7 @@ export function priorityCompareInteger(left: Integer, right: Integer, priority: 
 }
 
 /** @public */
-export function compareUndefinableInteger(left: Integer | undefined, right: Integer | undefined, undefinedIsLowest: boolean) {
+export function compareUndefinableInteger(left: Integer | undefined, right: Integer | undefined, undefinedIsLowest: boolean): ComparisonResult {
     if (left === undefined) {
         if (right === undefined) {
             return ComparisonResult.LeftEqualsRight;
@@ -158,7 +158,7 @@ export function compareUndefinableInteger(left: Integer | undefined, right: Inte
 }
 
 /** @public */
-export function compareEnum<T extends number>(left: T, right: T): number {
+export function compareEnum<T extends number>(left: T, right: T): ComparisonResult {
     if (left < right) {
         return ComparisonResult.LeftLessThanRight;
     } else {
@@ -171,7 +171,7 @@ export function compareEnum<T extends number>(left: T, right: T): number {
 }
 
 /** @public */
-export function compareUndefinableEnum<T extends number>(left: T | undefined, right: T | undefined, undefinedIsLowest: boolean) {
+export function compareUndefinableEnum<T extends number>(left: T | undefined, right: T | undefined, undefinedIsLowest: boolean): ComparisonResult {
     if (left === undefined) {
         if (right === undefined) {
             return ComparisonResult.LeftEqualsRight;
@@ -188,7 +188,7 @@ export function compareUndefinableEnum<T extends number>(left: T | undefined, ri
 }
 
 /** @public */
-export function compareString(left: string, right: string): number {
+export function compareString(left: string, right: string): ComparisonResult {
     if (left < right) {
         return ComparisonResult.LeftLessThanRight;
     } else {
@@ -201,7 +201,20 @@ export function compareString(left: string, right: string): number {
 }
 
 /** @public */
-export function compareUndefinableString(left: string | undefined, right: string | undefined, undefinedIsLowest: boolean) {
+export function priorityCompareString(left: string, right: string, priority: string): ComparisonResult {
+    if (left === priority) {
+        return right === priority ? ComparisonResult.LeftEqualsRight : ComparisonResult.LeftLessThanRight;
+    } else {
+        if (right === priority) {
+            return ComparisonResult.LeftGreaterThanRight;
+        } else {
+            return compareString(left, right);
+        }
+    }
+}
+
+/** @public */
+export function compareUndefinableString(left: string | undefined, right: string | undefined, undefinedIsLowest: boolean): ComparisonResult {
     if (left === undefined) {
         if (right === undefined) {
             return ComparisonResult.LeftEqualsRight;
@@ -218,7 +231,7 @@ export function compareUndefinableString(left: string | undefined, right: string
 }
 
 /** @public */
-export function compareBoolean(left: boolean, right: boolean): number {
+export function compareBoolean(left: boolean, right: boolean): ComparisonResult {
     if (left === right) {
         return ComparisonResult.LeftEqualsRight;
     } else {
@@ -231,7 +244,7 @@ export function compareBoolean(left: boolean, right: boolean): number {
 }
 
 /** @public */
-export function compareUndefinableBoolean(left: boolean | undefined, right: boolean | undefined, undefinedIsLowest: boolean) {
+export function compareUndefinableBoolean(left: boolean | undefined, right: boolean | undefined, undefinedIsLowest: boolean): ComparisonResult {
     if (left === undefined) {
         if (right === undefined) {
             return ComparisonResult.LeftEqualsRight;
@@ -266,7 +279,7 @@ export function concatenateArrayUniquely<T>(left: readonly T[], right: readonly 
 }
 
 /** @public */
-export function concatenateElementToArrayUniquely<T>(array: readonly T[], element: T) {
+export function concatenateElementToArrayUniquely<T>(array: readonly T[], element: T): T[] {
     const result = array.slice();
     if (!array.includes(element)) {
         result.push(element);
@@ -275,7 +288,7 @@ export function concatenateElementToArrayUniquely<T>(array: readonly T[], elemen
 }
 
 /** @public */
-export function subtractElementFromArray<T>(array: readonly T[], element: T) {
+export function subtractElementFromArray<T>(array: readonly T[], element: T): T[] {
     const result = array.slice();
     const count = result.length;
     for (let i = count - 1; i >= 0; i--) {
@@ -289,7 +302,7 @@ export function subtractElementFromArray<T>(array: readonly T[], element: T) {
 /** Assumes array has at most one instance of element
  * @public
  */
-export function subtractElementFromArrayUniquely<T>(array: readonly T[], element: T) {
+export function subtractElementFromArrayUniquely<T>(array: readonly T[], element: T): T[] {
     const result = array.slice();
     const count = array.length;
     for (let i = count - 1; i >= 0; i--) {
@@ -302,7 +315,7 @@ export function subtractElementFromArrayUniquely<T>(array: readonly T[], element
 }
 
 /** @public */
-export function addToArrayByPush<T>(target: T[], addition: readonly T[]) {
+export function addToArrayByPush<T>(target: T[], addition: readonly T[]): void {
     const additionCount = addition.length;
     for (let i = 0; i < additionCount; i++) {
         const element = addition[i];
@@ -311,7 +324,7 @@ export function addToArrayByPush<T>(target: T[], addition: readonly T[]) {
 }
 
 /** @public */
-export function addToArrayUniquely<T>(target: T[], addition: readonly T[]) {
+export function addToArrayUniquely<T>(target: T[], addition: readonly T[]): void {
     let additionIdx = target.length;
     target.length += addition.length;
     for (let i = 0; i < addition.length; i++) {
@@ -324,7 +337,7 @@ export function addToArrayUniquely<T>(target: T[], addition: readonly T[]) {
 }
 
 /** @public */
-export function addToCapacitisedArrayUniquely<T>(target: T[], count: Integer, addition: readonly T[]) {
+export function addToCapacitisedArrayUniquely<T>(target: T[], count: Integer, addition: readonly T[]): Integer {
     const additionCount = addition.length;
     const maxNewCount = count + additionCount;
     if (maxNewCount > target.length) {
@@ -340,7 +353,7 @@ export function addToCapacitisedArrayUniquely<T>(target: T[], count: Integer, ad
 }
 
 /** @public */
-export function addToGrow15ArrayUniquely<T>(target: T[], count: Integer, addition: readonly T[]) {
+export function addToGrow15ArrayUniquely<T>(target: T[], count: Integer, addition: readonly T[]): Integer {
     const additionCount = addition.length;
     const maxNewCount = count + additionCount;
     if (maxNewCount > target.length) {
@@ -424,7 +437,7 @@ export function testRemoveFromArray<T>(
 }
 
 /** @public */
-export function compareDate(left: Date, right: Date) {
+export function compareDate(left: Date, right: Date): ComparisonResult {
     const leftTime = left.getTime();
     const rightTime = right.getTime();
     if (leftTime === rightTime) {
@@ -439,7 +452,7 @@ export function compareDate(left: Date, right: Date) {
 }
 
 /** @public */
-export function compareUndefinableDate(left: Date | undefined, right: Date | undefined, undefinedIsLowest: boolean) {
+export function compareUndefinableDate(left: Date | undefined, right: Date | undefined, undefinedIsLowest: boolean): ComparisonResult {
     if (left === undefined) {
         if (right === undefined) {
             return ComparisonResult.LeftEqualsRight;
@@ -579,12 +592,12 @@ export function compareArray<T>(left: readonly T[], right: readonly T[]): number
 }
 
 /** @public */
-export function copyJson(obj: Json) {
+export function copyJson(obj: Json): Json {
     return deepExtendObject({}, obj) as Json;
 }
 
 /** @public */
-export function copyJsonValue(value: JsonValue) {
+export function copyJsonValue(value: JsonValue): JsonValue {
     return deepExtendValue({}, value) as JsonValue;
 }
 
@@ -645,12 +658,12 @@ export function deepExtendValue(existingTarget: unknown, value: unknown): unknow
 }
 
 /** @public */
-export function deepClone(object: Record<string, unknown>) {
+export function deepClone(object: Record<string, unknown>): unknown {
     return deepExtendValue({}, object);
 }
 
 /** @public */
-export function isUndefinableStringNumberBooleanNestArrayEqual(left: unknown[] | undefined, right: unknown[] | undefined) {
+export function isUndefinableStringNumberBooleanNestArrayEqual(left: unknown[] | undefined, right: unknown[] | undefined): boolean {
     if (left === undefined) {
         return right === undefined;
     } else {

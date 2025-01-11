@@ -6,8 +6,8 @@
 // DO NOT USE unless suitable use case identified
 // Currently excluded in tsconfig.app.json
 
+import { earliestBinarySearch } from './binary-search';
 import { compareNumber, SysTick } from './utils';
-import { earliestBinarySearch } from './utils-search';
 
 /** @public */
 class FiredTimerStack {

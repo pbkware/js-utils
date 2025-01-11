@@ -19,10 +19,10 @@ export function addToArrayByPush<T>(target: T[], addition: readonly T[]): void;
 export function addToArrayUniquely<T>(target: T[], addition: readonly T[]): void;
 
 // @public (undocumented)
-export function addToCapacitisedArrayUniquely<T>(target: T[], count: Integer, addition: readonly T[]): number;
+export function addToCapacitisedArrayUniquely<T>(target: T[], count: Integer, addition: readonly T[]): Integer;
 
 // @public (undocumented)
-export function addToGrow15ArrayUniquely<T>(target: T[], count: Integer, addition: readonly T[]): number;
+export function addToGrow15ArrayUniquely<T>(target: T[], count: Integer, addition: readonly T[]): Integer;
 
 // @public (undocumented)
 export class AnchoredRecordsList<Record extends AnchoredRecordsList.Record> implements RecordList<Record> {
@@ -93,6 +93,25 @@ export namespace AssertInternalError {
     export function createIfNotError(e: unknown, code: string, extraMessage?: string, extraFormatting?: InternalError.ExtraFormatting): Error;
     // (undocumented)
     export function throwErrorIfPromiseRejected<T>(promise: Promise<T>, code: string, extraMessage?: string, extraFormatting?: InternalError.ExtraFormatting): void;
+}
+
+// @public (undocumented)
+export namespace BinaryFind {
+    export function any<T>(values: T[], compareItemFn: CompareItemFn<T>): Result;
+    // (undocumented)
+    export type CompareItemFn<in T> = (this: void, item: T) => ComparisonResult;
+    export function earliest<T>(values: T[], compareItemFn: CompareItemFn<T>): Result;
+    export function latest<T>(values: T[], compareItemFn: CompareItemFn<T>): Result;
+    export function rangedAny<T>(values: T[], compareItemFn: CompareItemFn<T>, index: Integer, count: Integer): Result;
+    export function rangedEarliest<T>(values: T[], compareItemFn: CompareItemFn<T>, index: Integer, count: Integer): Result;
+    export function rangedLatest<T>(values: T[], compareItemFn: CompareItemFn<T>, index: Integer, count: Integer): Result;
+    // (undocumented)
+    export interface Result {
+        // (undocumented)
+        found: boolean;
+        // (undocumented)
+        index: Integer;
+    }
 }
 
 // @public (undocumented)
@@ -258,6 +277,12 @@ export class ComparableList<out T extends U, in U = T> {
     // (undocumented)
     protected assign(other: ComparableList<T, U>): void;
     // (undocumented)
+    binaryFindAny(compareToFn: BinaryFind.CompareItemFn<T>): BinaryFind.Result;
+    // (undocumented)
+    binaryFindEarliest(compareToFn: BinaryFind.CompareItemFn<T>): BinaryFind.Result;
+    // (undocumented)
+    binaryFindLatest(compareToFn: BinaryFind.CompareItemFn<T>): BinaryFind.Result;
+    // (undocumented)
     binarySearchAny(item: T, compareItemsFtn?: CompareFtn<T>): BinarySearchResult;
     // (undocumented)
     binarySearchEarliest(item: T, compareItemsFtn?: CompareFtn<T>): BinarySearchResult;
@@ -314,6 +339,8 @@ export class ComparableList<out T extends U, in U = T> {
     // (undocumented)
     moveRange(fromIndex: Integer, toIndex: Integer, count: Integer): void;
     // (undocumented)
+    rangeToArray(index: Integer, count: Integer): T[];
+    // (undocumented)
     remove(value: T): void;
     // (undocumented)
     removeAtIndex(index: Integer): void;
@@ -349,7 +376,7 @@ export namespace ComparableList {
 export function compareArray<T>(left: readonly T[], right: readonly T[]): number;
 
 // @public (undocumented)
-export function compareBoolean(left: boolean, right: boolean): number;
+export function compareBoolean(left: boolean, right: boolean): ComparisonResult;
 
 // @public (undocumented)
 export function compareDate(left: Date, right: Date): ComparisonResult;
@@ -358,7 +385,7 @@ export function compareDate(left: Date, right: Date): ComparisonResult;
 export function compareDecimal(left: SysDecimal, right: SysDecimal): number;
 
 // @public (undocumented)
-export function compareEnum<T extends number>(left: T, right: T): number;
+export function compareEnum<T extends number>(left: T, right: T): ComparisonResult;
 
 // @public (undocumented)
 export type CompareFtn<in T> = (this: void, left: T, right: T) => ComparisonResult;
@@ -370,10 +397,10 @@ export function compareInteger(left: Integer, right: Integer): ComparisonResult;
 export function compareNumber(left: number, right: number): ComparisonResult;
 
 // @public (undocumented)
-export function compareString(left: string, right: string): number;
+export function compareString(left: string, right: string): ComparisonResult;
 
 // @public (undocumented)
-export function compareUndefinableBoolean(left: boolean | undefined, right: boolean | undefined, undefinedIsLowest: boolean): number;
+export function compareUndefinableBoolean(left: boolean | undefined, right: boolean | undefined, undefinedIsLowest: boolean): ComparisonResult;
 
 // @public (undocumented)
 export function compareUndefinableDate(left: Date | undefined, right: Date | undefined, undefinedIsLowest: boolean): ComparisonResult;
@@ -382,7 +409,7 @@ export function compareUndefinableDate(left: Date | undefined, right: Date | und
 export function compareUndefinableDecimal(left: SysDecimal | undefined, right: SysDecimal | undefined, undefinedIsLowest: boolean): number;
 
 // @public (undocumented)
-export function compareUndefinableEnum<T extends number>(left: T | undefined, right: T | undefined, undefinedIsLowest: boolean): number;
+export function compareUndefinableEnum<T extends number>(left: T | undefined, right: T | undefined, undefinedIsLowest: boolean): ComparisonResult;
 
 // @public (undocumented)
 export function compareUndefinableInteger(left: Integer | undefined, right: Integer | undefined, undefinedIsLowest: boolean): ComparisonResult;
@@ -391,7 +418,7 @@ export function compareUndefinableInteger(left: Integer | undefined, right: Inte
 export function compareUndefinableNumber(left: number | undefined, right: number | undefined, undefinedIsLowest: boolean): ComparisonResult;
 
 // @public (undocumented)
-export function compareUndefinableString(left: string | undefined, right: string | undefined, undefinedIsLowest: boolean): number;
+export function compareUndefinableString(left: string | undefined, right: string | undefined, undefinedIsLowest: boolean): ComparisonResult;
 
 // @public (undocumented)
 export function compareValue<T extends number | string>(left: T, right: T): ComparisonResult;
@@ -783,7 +810,7 @@ export interface Json {
 
 // @public (undocumented)
 export class JsonElement {
-    constructor(jsonObject?: JsonElement.Json | Json);
+    constructor(jsonObject?: JsonElement.UndefinableJsonValueRecord | Json);
     // (undocumented)
     clear(): void;
     // (undocumented)
@@ -875,11 +902,17 @@ export class JsonElement {
     // (undocumented)
     tryGetBooleanArray(name: string): Result<boolean[], JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotABoolean>;
     // (undocumented)
+    tryGetBooleanOrNull(name: string): Result<boolean | null, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeBooleanOrNull>;
+    // (undocumented)
+    tryGetBooleanOrNullArray(name: string): Result<(boolean | null)[], JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotABooleanOrNull>;
+    // (undocumented)
     tryGetDate(name: string): Result<Date, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeString>;
     // (undocumented)
     tryGetDateTime(name: string): Result<Date, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeString>;
     // (undocumented)
-    tryGetDecimal(name: string): Result<SysDecimal, JsonElement.ErrorId.InvalidDecimal | JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString>;
+    tryGetDecimal(name: string): Result<SysDecimal, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.InvalidDecimal | JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString>;
+    // (undocumented)
+    tryGetDefinedNumber(name: string): Result<number | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeNumber>;
     // (undocumented)
     tryGetElement(name: string): Result<JsonElement, JsonElement.ErrorId.ElementIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeObject>;
     // (undocumented)
@@ -901,47 +934,113 @@ export class JsonElement {
     // (undocumented)
     tryGetNumberArray(name: string): Result<number[], JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotANumber>;
     // (undocumented)
+    tryGetNumberOrNull(name: string): Result<number | null, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeNumberOrNull>;
+    // (undocumented)
+    tryGetNumberOrNullArray(name: string): Result<(number | null)[], JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotANumberOrNull>;
+    // (undocumented)
     tryGetString(name: string): Result<string, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeString>;
     // (undocumented)
     tryGetStringArray(name: string): Result<string[], JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotAString>;
+    // (undocumented)
+    tryGetStringOrNull(name: string): Result<string | null, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeStringOrNull>;
+    // (undocumented)
+    tryGetStringOrNullArray(name: string): Result<(string | null)[], JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotAStringOrNull>;
+    // (undocumented)
+    tryGetUndefinableAnyJsonValueArray(name: string): Result<JsonValue[] | undefined, JsonElement.ErrorId.JsonValueIsNotAnArray>;
+    // (undocumented)
+    tryGetUndefinableBoolean(name: string): Result<boolean | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeBoolean>;
+    // (undocumented)
+    tryGetUndefinableBooleanArray(name: string): Result<boolean[] | undefined, JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotABoolean>;
+    // (undocumented)
+    tryGetUndefinableBooleanOrNull(name: string): Result<boolean | null | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeBooleanOrNull>;
+    // (undocumented)
+    tryGetUndefinableBooleanOrNullArray(name: string): Result<(boolean | null)[] | undefined, JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotABooleanOrNull>;
+    // (undocumented)
+    tryGetUndefinableDate(name: string): Result<Date | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeString>;
+    // (undocumented)
+    tryGetUndefinableDateTime(name: string): Result<Date | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeString>;
+    // (undocumented)
+    tryGetUndefinableDecimal(name: string): Result<SysDecimal | undefined, JsonElement.ErrorId.InvalidDecimal | JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString>;
+    // (undocumented)
+    tryGetUndefinableElement(name: string): Result<JsonElement | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeObject>;
+    // (undocumented)
+    tryGetUndefinableElementArray(name: string): Result<JsonElement[] | undefined, JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotAnObject>;
+    // (undocumented)
+    tryGetUndefinableGuid(name: string): Result<Guid | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeString>;
+    // (undocumented)
+    tryGetUndefinableInteger(name: string): Result<Integer | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeNumber>;
+    // (undocumented)
+    tryGetUndefinableJsonObject(name: string): Result<Json | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeObject>;
+    // (undocumented)
+    tryGetUndefinableJsonObjectArray(name: string): Result<Json[] | undefined, JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotJson>;
+    // (undocumented)
+    tryGetUndefinableNativeObject(name: string): Result<object | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeObject>;
+    // (undocumented)
+    tryGetUndefinableNumber(name: string): Result<number | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeNumber>;
+    // (undocumented)
+    tryGetUndefinableNumberArray(name: string): Result<number[] | undefined, JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotANumber>;
+    // (undocumented)
+    tryGetUndefinableNumberOrNull(name: string): Result<number | null | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeNumberOrNull>;
+    // (undocumented)
+    tryGetUndefinableNumberOrNullArray(name: string): Result<(number | null)[] | undefined, JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotANumberOrNull>;
+    // (undocumented)
+    tryGetUndefinableString(name: string): Result<string | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeString>;
+    // (undocumented)
+    tryGetUndefinableStringArray(name: string): Result<string[] | undefined, JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotAString>;
+    // (undocumented)
+    tryGetUndefinableStringOrNull(name: string): Result<string | null | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeStringOrNull>;
+    // (undocumented)
+    tryGetUndefinableStringOrNullArray(name: string): Result<(string | null)[] | undefined, JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotAStringOrNull>;
 }
 
 // @public (undocumented)
 export namespace JsonElement {
     // (undocumented)
-    export function createRootElement(rootJson: Json): JsonElement;
+    export function createRootElement(rootJson: UndefinableJsonValueRecord): JsonElement;
     // (undocumented)
     export const enum ErrorId {
         // (undocumented)
-        DecimalJsonValueIsNotOfTypeString = 7,
+        DecimalJsonValueIsNotOfTypeString = 10,
         // (undocumented)
         ElementIsNotDefined = 1,
         // (undocumented)
-        InvalidDecimal = 8,
+        InvalidDecimal = 11,
         // (undocumented)
         InvalidJsonText = 0,
         // (undocumented)
-        JsonValueArrayElementIsNotABoolean = 14,
+        JsonValueArrayElementIsNotABoolean = 19,
         // (undocumented)
-        JsonValueArrayElementIsNotAnObject = 10,
+        JsonValueArrayElementIsNotABooleanOrNull = 20,
         // (undocumented)
-        JsonValueArrayElementIsNotANumber = 13,
+        JsonValueArrayElementIsNotAnObject = 13,
         // (undocumented)
-        JsonValueArrayElementIsNotAString = 12,
+        JsonValueArrayElementIsNotANumber = 17,
         // (undocumented)
-        JsonValueArrayElementIsNotJson = 11,
+        JsonValueArrayElementIsNotANumberOrNull = 18,
         // (undocumented)
-        JsonValueIsNotAnArray = 9,
+        JsonValueArrayElementIsNotAString = 15,
+        // (undocumented)
+        JsonValueArrayElementIsNotAStringOrNull = 16,
+        // (undocumented)
+        JsonValueArrayElementIsNotJson = 14,
+        // (undocumented)
+        JsonValueIsNotAnArray = 12,
         // (undocumented)
         JsonValueIsNotDefined = 2,
         // (undocumented)
-        JsonValueIsNotOfTypeBoolean = 6,
+        JsonValueIsNotOfTypeBoolean = 8,
         // (undocumented)
-        JsonValueIsNotOfTypeNumber = 5,
+        JsonValueIsNotOfTypeBooleanOrNull = 9,
+        // (undocumented)
+        JsonValueIsNotOfTypeNumber = 6,
+        // (undocumented)
+        JsonValueIsNotOfTypeNumberOrNull = 7,
         // (undocumented)
         JsonValueIsNotOfTypeObject = 3,
         // (undocumented)
-        JsonValueIsNotOfTypeString = 4
+        JsonValueIsNotOfTypeString = 4,
+        // (undocumented)
+        JsonValueIsNotOfTypeStringOrNull = 5
     }
     // (undocumented)
     export type ForEachBooleanCallback = (this: void, name: string, value: boolean, idx: Integer) => void;
@@ -956,9 +1055,43 @@ export namespace JsonElement {
     // (undocumented)
     export type ForEachValueCallback = (this: void, name: string, value: JsonValue, idx: Integer) => void;
     // (undocumented)
-    export type Json = Record<string, JsonValue | undefined>;
-    // (undocumented)
     export function tryGetChildElement(parentElement: JsonElement, childName: string): Result<JsonElement, ErrorId.ElementIsNotDefined | ErrorId.JsonValueIsNotOfTypeObject>;
+    // (undocumented)
+    export function tryJsonValueToBoolean(jsonValue: JsonValue): Result<boolean, JsonElement.ErrorId.JsonValueIsNotOfTypeBoolean>;
+    // (undocumented)
+    export function tryJsonValueToBooleanArray(jsonValue: JsonValue): Result<boolean[], JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotABoolean>;
+    // (undocumented)
+    export function tryJsonValueToBooleanOrNull(jsonValue: JsonValue): Result<boolean | null, JsonElement.ErrorId.JsonValueIsNotOfTypeBooleanOrNull>;
+    // (undocumented)
+    export function tryJsonValueToBooleanOrNullArray(jsonValue: JsonValue): Result<(boolean | null)[], JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotABooleanOrNull>;
+    // (undocumented)
+    export function tryJsonValueToDecimal(jsonValue: JsonValue): Result<SysDecimal, JsonElement.ErrorId.InvalidDecimal | JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString>;
+    // (undocumented)
+    export function tryJsonValueToElementArray(jsonValue: JsonValue): Result<JsonElement[], JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotAnObject>;
+    // (undocumented)
+    export function tryJsonValueToJson(jsonValue: JsonValue): Result<Json, JsonElement.ErrorId.JsonValueIsNotOfTypeObject>;
+    // (undocumented)
+    export function tryJsonValueToJsonObjectArray(jsonValue: JsonValue): Result<Json[], JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotJson>;
+    // (undocumented)
+    export function tryJsonValueToJsonValueArray(jsonValue: JsonValue): Result<JsonValue[], JsonElement.ErrorId.JsonValueIsNotAnArray>;
+    // (undocumented)
+    export function tryJsonValueToNumber(jsonValue: JsonValue): Result<number, JsonElement.ErrorId.JsonValueIsNotOfTypeNumber>;
+    // (undocumented)
+    export function tryJsonValueToNumberArray(jsonValue: JsonValue): Result<number[], JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotANumber>;
+    // (undocumented)
+    export function tryJsonValueToNumberOrNull(jsonValue: JsonValue): Result<number | null, JsonElement.ErrorId.JsonValueIsNotOfTypeNumberOrNull>;
+    // (undocumented)
+    export function tryJsonValueToNumberOrNullArray(jsonValue: JsonValue): Result<(number | null)[], JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotANumberOrNull>;
+    // (undocumented)
+    export function tryJsonValueToString(jsonValue: JsonValue): Result<string, JsonElement.ErrorId.JsonValueIsNotOfTypeString>;
+    // (undocumented)
+    export function tryJsonValueToStringArray(jsonValue: JsonValue): Result<string[], JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotAString>;
+    // (undocumented)
+    export function tryJsonValueToStringOrNull(jsonValue: JsonValue): Result<string | null, JsonElement.ErrorId.JsonValueIsNotOfTypeStringOrNull>;
+    // (undocumented)
+    export function tryJsonValueToStringOrNullArray(jsonValue: JsonValue): Result<(string | null)[], JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotAStringOrNull>;
+    // (undocumented)
+    export type UndefinableJsonValueRecord = Record<string, JsonValue | undefined>;
 }
 
 // @public (undocumented)
@@ -1393,6 +1526,9 @@ export type PickExcludedEnum<T, K extends T> = {
 
 // @public (undocumented)
 export function priorityCompareInteger(left: Integer, right: Integer, priority: Integer): ComparisonResult;
+
+// @public (undocumented)
+export function priorityCompareString(left: string, right: string, priority: string): ComparisonResult;
 
 // @public (undocumented)
 export function quickSort<T>(values: T[], compareFtn: CompareFtn<T>): void;

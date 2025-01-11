@@ -2,25 +2,25 @@
 
 import { UnreachableCaseError } from './internal-error';
 import { Err, Ok, Result } from './result';
+import { newDecimal, SysDecimal } from './sys-decimal';
 import { Guid, Integer, Json, JsonValue } from './types';
 import { dateToDateOnlyIsoString, deepExtendObject } from './utils';
-import { newDecimal, SysDecimal } from './sys-decimal';
 
 /** @public */
 export class JsonElement {
-    private _json: JsonElement.Json;
+    private _json: JsonElement.UndefinableJsonValueRecord;
 
-    constructor(jsonObject?: JsonElement.Json | Json) {
+    constructor(jsonObject?: JsonElement.UndefinableJsonValueRecord | Json) {
         this._json = jsonObject ?? {};
     }
 
-    get json() { return this._json as Json; }
+    get json(): Json { return this._json as Json; }
 
-    clear() {
+    clear(): void {
         this._json = {};
     }
 
-    shallowAssign(element: JsonElement | undefined) {
+    shallowAssign(element: JsonElement | undefined): void {
         if (element === undefined) {
             this._json = {};
         } else {
@@ -34,7 +34,7 @@ export class JsonElement {
         }
     }
 
-    deepExtend(other: Json) {
+    deepExtend(other: Json): void {
         deepExtendObject(this._json, other);
     }
 
@@ -52,7 +52,7 @@ export class JsonElement {
         }
     }
 
-    hasName(name: string) {
+    hasName(name: string): boolean {
         return name in this._json;
     }
 
@@ -73,47 +73,93 @@ export class JsonElement {
         }
     }
 
-    tryGetJsonValue(name: string) {
+    tryGetUndefinableElement(name: string): Result<JsonElement | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeObject> {
+        const getResult = this.tryGetUndefinableJsonObject(name);
+        if (getResult.isErr()) {
+            const errorId = getResult.error;
+            return new Err(errorId);
+        } else {
+            const jsonObject = getResult.value;
+            const element = new JsonElement(jsonObject);
+            return new Ok(element);
+        }
+    }
+
+    tryGetJsonValue(name: string): JsonValue | undefined {
         return this._json[name];
     }
 
     // eslint-disable-next-line @typescript-eslint/ban-types
     tryGetNativeObject(name: string): Result<object, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeObject> {
         const jsonValue = this._json[name];
-        if (JsonValue.isJson(jsonValue)) {
-            return new Ok(jsonValue);
+        if (jsonValue === undefined) {
+            return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
         } else {
-            if (jsonValue === undefined) {
-                return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
-            } else {
-                return new Err(JsonElement.ErrorId.JsonValueIsNotOfTypeObject);
-            }
+            return JsonElement.tryJsonValueToJson(jsonValue);
+        }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    tryGetUndefinableNativeObject(name: string): Result<object | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeObject> {
+        const jsonValue = this._json[name];
+        if (jsonValue === undefined) {
+            return new Ok(undefined);
+        } else {
+            return JsonElement.tryJsonValueToJson(jsonValue);
         }
     }
 
     tryGetJsonObject(name: string): Result<Json, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeObject> {
         const jsonValue = this._json[name];
-        if (JsonValue.isJson(jsonValue)) {
-            return new Ok(jsonValue);
+        if (jsonValue === undefined) {
+            return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
         } else {
-            if (jsonValue === undefined) {
-                return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
-            } else {
-                return new Err(JsonElement.ErrorId.JsonValueIsNotOfTypeObject);
-            }
+            return JsonElement.tryJsonValueToJson(jsonValue);
+        }
+    }
+
+    tryGetUndefinableJsonObject(name: string): Result<Json | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeObject> {
+        const jsonValue = this._json[name];
+        if (jsonValue === undefined) {
+            return new Ok(undefined);
+        } else {
+            return JsonElement.tryJsonValueToJson(jsonValue);
         }
     }
 
     tryGetString(name: string): Result<string, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeString> {
         const jsonValue = this._json[name];
-        if (typeof jsonValue === 'string') {
-            return new Ok(jsonValue);
+        if (jsonValue === undefined) {
+            return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
         } else {
-            if (jsonValue === undefined) {
-                return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
-            } else {
-                return new Err(JsonElement.ErrorId.JsonValueIsNotOfTypeString);
-            }
+            return JsonElement.tryJsonValueToString(jsonValue);
+        }
+    }
+
+    tryGetStringOrNull(name: string): Result<string | null, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeStringOrNull> {
+        const jsonValue = this._json[name];
+        if (jsonValue === undefined) {
+            return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
+        } else {
+            return JsonElement.tryJsonValueToStringOrNull(jsonValue);
+        }
+    }
+
+    tryGetUndefinableString(name: string): Result<string | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeString> {
+        const jsonValue = this._json[name];
+        if (jsonValue === undefined) {
+            return new Ok(undefined);
+        } else {
+            return JsonElement.tryJsonValueToString(jsonValue);
+        }
+    }
+
+    tryGetUndefinableStringOrNull(name: string): Result<string | null | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeStringOrNull> {
+        const jsonValue = this._json[name];
+        if (jsonValue === undefined) {
+            return new Ok(undefined);
+        } else {
+            return JsonElement.tryJsonValueToStringOrNull(jsonValue);
         }
     }
 
@@ -137,11 +183,47 @@ export class JsonElement {
 
     tryGetNumber(name: string): Result<number, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeNumber> {
         const jsonValue = this._json[name];
+        if (jsonValue === undefined) {
+            return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
+        } else {
+            return JsonElement.tryJsonValueToNumber(jsonValue);
+        }
+    }
+
+    tryGetNumberOrNull(name: string): Result<number | null, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeNumberOrNull> {
+        const jsonValue = this._json[name];
+        if (jsonValue === undefined) {
+            return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
+        } else {
+            return JsonElement.tryJsonValueToNumberOrNull(jsonValue);
+        }
+    }
+
+    tryGetUndefinableNumber(name: string): Result<number | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeNumber> {
+        const jsonValue = this._json[name];
+        if (jsonValue === undefined) {
+            return new Ok(undefined);
+        } else {
+            return JsonElement.tryJsonValueToNumber(jsonValue);
+        }
+    }
+
+    tryGetUndefinableNumberOrNull(name: string): Result<number | null | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeNumberOrNull> {
+        const jsonValue = this._json[name];
+        if (jsonValue === undefined) {
+            return new Ok(undefined);
+        } else {
+            return JsonElement.tryJsonValueToNumberOrNull(jsonValue);
+        }
+    }
+
+    tryGetDefinedNumber(name: string): Result<number | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeNumber> {
+        const jsonValue = this._json[name];
         if (typeof jsonValue === 'number') {
             return new Ok(jsonValue);
         } else {
             if (jsonValue === undefined) {
-                return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
+                return new Ok(undefined);
             } else {
                 return new Err(JsonElement.ErrorId.JsonValueIsNotOfTypeNumber);
             }
@@ -157,7 +239,7 @@ export class JsonElement {
         }
     }
 
-    getNumberOrUndefined(name: string) {
+    getNumberOrUndefined(name: string): number | undefined {
         const tryResult = this.tryGetNumber(name);
         if (tryResult.isOk()) {
             return tryResult.value;
@@ -168,14 +250,37 @@ export class JsonElement {
 
     tryGetBoolean(name: string): Result<boolean, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeBoolean> {
         const jsonValue = this._json[name];
-        if (typeof jsonValue === 'boolean') {
-            return new Ok(jsonValue);
+        if (jsonValue === undefined) {
+            return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
         } else {
-            if (jsonValue === undefined) {
-                return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
-            } else {
-                return new Err(JsonElement.ErrorId.JsonValueIsNotOfTypeBoolean);
-            }
+            return JsonElement.tryJsonValueToBoolean(jsonValue);
+        }
+    }
+
+    tryGetBooleanOrNull(name: string): Result<boolean | null, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeBooleanOrNull> {
+        const jsonValue = this._json[name];
+        if (jsonValue === undefined) {
+            return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
+        } else {
+            return JsonElement.tryJsonValueToBooleanOrNull(jsonValue);
+        }
+    }
+
+    tryGetUndefinableBoolean(name: string): Result<boolean | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeBoolean> {
+        const jsonValue = this._json[name];
+        if (jsonValue === undefined) {
+            return new Ok(undefined);
+        } else {
+            return JsonElement.tryJsonValueToBoolean(jsonValue);
+        }
+    }
+
+    tryGetUndefinableBooleanOrNull(name: string): Result<boolean | null | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeBooleanOrNull> {
+        const jsonValue = this._json[name];
+        if (jsonValue === undefined) {
+            return new Ok(undefined);
+        } else {
+            return JsonElement.tryJsonValueToBooleanOrNull(jsonValue);
         }
     }
 
@@ -203,23 +308,17 @@ export class JsonElement {
         if (jsonValue === undefined) {
             return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
         } else {
-            if (!Array.isArray(jsonValue)) {
-                return new Err(JsonElement.ErrorId.JsonValueIsNotAnArray);
-            } else {
-                const jsonValueArray = jsonValue as JsonValue[];
-                const count = jsonValueArray.length;
-                const resultArray = new Array<JsonElement>(count);
-                for (let i = 0; i < count; i++) {
-                    const elementJsonValue = jsonValueArray[i];
-                    if (typeof elementJsonValue === 'object') {
-                        resultArray[i] = new JsonElement(elementJsonValue as Json);
-                    } else {
-                        return new Err(JsonElement.ErrorId.JsonValueArrayElementIsNotAnObject);
-                    }
-                }
+            return JsonElement.tryJsonValueToElementArray(jsonValue);
+        }
+    }
 
-                return new Ok(resultArray);
-            }
+    tryGetUndefinableElementArray(name: string): Result<JsonElement[] | undefined, JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotAnObject> {
+        const jsonValue = this._json[name];
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (jsonValue === undefined) {
+            return new Ok(undefined);
+        } else {
+            return JsonElement.tryJsonValueToElementArray(jsonValue);
         }
     }
 
@@ -228,23 +327,16 @@ export class JsonElement {
         if (jsonValue === undefined) {
             return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
         } else {
-            if (!Array.isArray(jsonValue)) {
-                return new Err(JsonElement.ErrorId.JsonValueIsNotAnArray);
-            } else {
-                const jsonValueArray = jsonValue as JsonValue[];
-                const count = jsonValueArray.length;
-                const resultArray = new Array<Json>(count);
-                for (let i = 0; i < count; i++) {
-                    const elementJsonValue = jsonValueArray[i];
-                    if (JsonValue.isJson(elementJsonValue)) {
-                        resultArray[i] = elementJsonValue;
-                    } else {
-                        return new Err(JsonElement.ErrorId.JsonValueArrayElementIsNotJson);
-                    }
-                }
+            return JsonElement.tryJsonValueToJsonObjectArray(jsonValue);
+        }
+    }
 
-                return new Ok(resultArray);
-            }
+    tryGetUndefinableJsonObjectArray(name: string): Result<Json[] | undefined, JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotJson> {
+        const jsonValue = this._json[name];
+        if (jsonValue === undefined) {
+            return new Ok(undefined);
+        } else {
+            return JsonElement.tryJsonValueToJsonObjectArray(jsonValue);
         }
     }
 
@@ -253,23 +345,34 @@ export class JsonElement {
         if (jsonValue === undefined) {
             return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
         } else {
-            if (!Array.isArray(jsonValue)) {
-                return new Err(JsonElement.ErrorId.JsonValueIsNotAnArray);
-            } else {
-                const jsonValueArray = jsonValue as JsonValue[];
-                const count = jsonValueArray.length;
-                const resultArray = new Array<string>(count);
-                for (let i = 0; i < count; i++) {
-                    const elementJsonValue = jsonValueArray[i];
-                    if (typeof elementJsonValue === 'string') {
-                        resultArray[i] = elementJsonValue;
-                    } else {
-                        return new Err(JsonElement.ErrorId.JsonValueArrayElementIsNotAString);
-                    }
-                }
+            return JsonElement.tryJsonValueToStringArray(jsonValue);
+        }
+    }
 
-                return new Ok(resultArray);
-            }
+    tryGetStringOrNullArray(name: string): Result<(string | null)[], JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotAStringOrNull> {
+        const jsonValue = this._json[name];
+        if (jsonValue === undefined) {
+            return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
+        } else {
+            return JsonElement.tryJsonValueToStringOrNullArray(jsonValue);
+        }
+    }
+
+    tryGetUndefinableStringArray(name: string): Result<string[] | undefined, JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotAString> {
+        const jsonValue = this._json[name];
+        if (jsonValue === undefined) {
+            return new Ok(undefined);
+        } else {
+            return JsonElement.tryJsonValueToStringArray(jsonValue);
+        }
+    }
+
+    tryGetUndefinableStringOrNullArray(name: string): Result<(string | null)[] | undefined, JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotAStringOrNull> {
+        const jsonValue = this._json[name];
+        if (jsonValue === undefined) {
+            return new Ok(undefined);
+        } else {
+            return JsonElement.tryJsonValueToStringOrNullArray(jsonValue);
         }
     }
 
@@ -278,23 +381,34 @@ export class JsonElement {
         if (jsonValue === undefined) {
             return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
         } else {
-            if (!Array.isArray(jsonValue)) {
-                return new Err(JsonElement.ErrorId.JsonValueIsNotAnArray);
-            } else {
-                const jsonValueArray = jsonValue as JsonValue[];
-                const count = jsonValueArray.length;
-                const resultArray = new Array<number>(count);
-                for (let i = 0; i < count; i++) {
-                    const elementJsonValue = jsonValueArray[i];
-                    if (typeof elementJsonValue === 'number') {
-                        resultArray[i] = elementJsonValue;
-                    } else {
-                        return new Err(JsonElement.ErrorId.JsonValueArrayElementIsNotANumber);
-                    }
-                }
+            return JsonElement.tryJsonValueToNumberArray(jsonValue);
+        }
+    }
 
-                return new Ok(resultArray);
-            }
+    tryGetNumberOrNullArray(name: string): Result<(number | null)[], JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotANumberOrNull> {
+        const jsonValue = this._json[name];
+        if (jsonValue === undefined) {
+            return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
+        } else {
+            return JsonElement.tryJsonValueToNumberOrNullArray(jsonValue);
+        }
+    }
+
+    tryGetUndefinableNumberArray(name: string): Result<number[] | undefined, JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotANumber> {
+        const jsonValue = this._json[name];
+        if (jsonValue === undefined) {
+            return new Ok(undefined);
+        } else {
+            return JsonElement.tryJsonValueToNumberArray(jsonValue);
+        }
+    }
+
+    tryGetUndefinableNumberOrNullArray(name: string): Result<(number | null)[] | undefined, JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotANumberOrNull> {
+        const jsonValue = this._json[name];
+        if (jsonValue === undefined) {
+            return new Ok(undefined);
+        } else {
+            return JsonElement.tryJsonValueToNumberOrNullArray(jsonValue);
         }
     }
 
@@ -303,23 +417,34 @@ export class JsonElement {
         if (jsonValue === undefined) {
             return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
         } else {
-            if (!Array.isArray(jsonValue)) {
-                return new Err(JsonElement.ErrorId.JsonValueIsNotAnArray);
-            } else {
-                const jsonValueArray = jsonValue as JsonValue[];
-                const count = jsonValueArray.length;
-                const resultArray = new Array<boolean>(count);
-                for (let i = 0; i < count; i++) {
-                    const elementJsonValue = jsonValueArray[i];
-                    if (typeof elementJsonValue === 'boolean') {
-                        resultArray[i] = elementJsonValue;
-                    } else {
-                        return new Err(JsonElement.ErrorId.JsonValueArrayElementIsNotABoolean);
-                    }
-                }
+            return JsonElement.tryJsonValueToBooleanArray(jsonValue);
+        }
+    }
 
-                return new Ok(resultArray);
-            }
+    tryGetBooleanOrNullArray(name: string): Result<(boolean | null)[], JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotABooleanOrNull> {
+        const jsonValue = this._json[name];
+        if (jsonValue === undefined) {
+            return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
+        } else {
+            return JsonElement.tryJsonValueToBooleanOrNullArray(jsonValue);
+        }
+    }
+
+    tryGetUndefinableBooleanArray(name: string): Result<boolean[] | undefined, JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotABoolean> {
+        const jsonValue = this._json[name];
+        if (jsonValue === undefined) {
+            return new Ok(undefined);
+        } else {
+            return JsonElement.tryJsonValueToBooleanArray(jsonValue);
+        }
+    }
+
+    tryGetUndefinableBooleanOrNullArray(name: string): Result<(boolean | null)[] | undefined, JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotABooleanOrNull> {
+        const jsonValue = this._json[name];
+        if (jsonValue === undefined) {
+            return new Ok(undefined);
+        } else {
+            return JsonElement.tryJsonValueToBooleanOrNullArray(jsonValue);
         }
     }
 
@@ -328,16 +453,25 @@ export class JsonElement {
         if (jsonValue === undefined) {
             return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
         } else {
-            if (!Array.isArray(jsonValue)) {
-                return new Err(JsonElement.ErrorId.JsonValueIsNotAnArray);
-            } else {
-                return new Ok(jsonValue);
-            }
+            return JsonElement.tryJsonValueToJsonValueArray(jsonValue);
+        }
+    }
+
+    tryGetUndefinableAnyJsonValueArray(name: string): Result<JsonValue[] | undefined, JsonElement.ErrorId.JsonValueIsNotAnArray> {
+        const jsonValue = this._json[name];
+        if (jsonValue === undefined) {
+            return new Ok(undefined);
+        } else {
+            return JsonElement.tryJsonValueToJsonValueArray(jsonValue);
         }
     }
 
     tryGetInteger(name: string): Result<Integer, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeNumber> {
         return this.tryGetNumber(name);
+    }
+
+    tryGetUndefinableInteger(name: string): Result<Integer | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeNumber> {
+        return this.tryGetUndefinableNumber(name);
     }
 
     getInteger(name: string, defaultValue: Integer) {
@@ -361,6 +495,22 @@ export class JsonElement {
         }
     }
 
+    tryGetUndefinableDate(name: string): Result<Date | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeString> {
+        const getStringResult = this.tryGetUndefinableString(name);
+        if (getStringResult.isErr()) {
+            return getStringResult.createType();
+        } else {
+            const stringValue = getStringResult.value;
+            if (stringValue === undefined) {
+                return new Ok(undefined);
+            } else {
+                // string value should have format YYYY-MM-DD
+                const date = new Date(stringValue);
+                return new Ok(date);
+            }
+        }
+    }
+
     getDate(name: string, defaultValue: Date) {
         const tryResult = this.tryGetDate(name);
         return tryResult.isErr() ? defaultValue : tryResult.value;
@@ -377,6 +527,22 @@ export class JsonElement {
         }
     }
 
+    tryGetUndefinableDateTime(name: string): Result<Date | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeString> {
+        const getStringResult = this.tryGetUndefinableString(name);
+        if (getStringResult.isErr()) {
+            return getStringResult.createType();
+        } else {
+            const stringValue = getStringResult.value;
+            if (stringValue === undefined) {
+                return new Ok(undefined);
+            } else {
+                // value should have ISO format
+                const date = new Date(stringValue);
+                return new Ok(date);
+            }
+        }
+    }
+
     getDateTime(name: string, defaultValue: Date) {
         const tryResult = this.tryGetDateTime(name);
         return tryResult.isErr() ? defaultValue : tryResult.value;
@@ -386,26 +552,30 @@ export class JsonElement {
         return this.tryGetString(name);
     }
 
+    tryGetUndefinableGuid(name: string): Result<Guid | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeString> {
+        return this.tryGetUndefinableString(name);
+    }
+
     getGuid(name: string, defaultValue: Guid) {
         const tryResult = this.tryGetGuid(name);
         return tryResult.isErr() ? defaultValue : tryResult.value;
     }
 
-    tryGetDecimal(name: string): Result<SysDecimal, JsonElement.ErrorId.InvalidDecimal | JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString> {
+    tryGetDecimal(name: string): Result<SysDecimal, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.InvalidDecimal | JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString> {
         const jsonValue = this._json[name];
-        if (typeof jsonValue === 'string') {
-            try {
-                const value = newDecimal(jsonValue);
-                return new Ok(value);
-            } catch (e) {
-                return new Err(JsonElement.ErrorId.InvalidDecimal);
-            }
+        if (jsonValue === undefined) {
+            return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
         } else {
-            if (jsonValue === undefined) {
-                return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
-            } else {
-                return new Err(JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString);
-            }
+            return JsonElement.tryJsonValueToDecimal(jsonValue);
+        }
+    }
+
+    tryGetUndefinableDecimal(name: string): Result<SysDecimal | undefined, JsonElement.ErrorId.InvalidDecimal| JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString> {
+        const jsonValue = this._json[name];
+        if (jsonValue === undefined) {
+            return new Ok(undefined);
+        } else {
+            return JsonElement.tryJsonValueToDecimal(jsonValue);
         }
     }
 
@@ -458,7 +628,7 @@ export class JsonElement {
 
     setElementArray(name: string, value: JsonElement[] | undefined) {
         if (value !== undefined) {
-            const valueObjArray = new Array<JsonElement.Json>(value.length);
+            const valueObjArray = new Array<JsonElement.UndefinableJsonValueRecord>(value.length);
             for (let i = 0; i < value.length; i++) {
                 valueObjArray[i] = value[i]._json;
             }
@@ -585,7 +755,7 @@ export namespace JsonElement {
     export type ForEachNumberCallback = (this: void, name: string, value: number, idx: Integer) => void;
     export type ForEachBooleanCallback = (this: void, name: string, value: boolean, idx: Integer) => void;
 
-    export type Json = Record<string, JsonValue | undefined>;
+    export type UndefinableJsonValueRecord = Record<string, JsonValue | undefined>;
 
     export const enum ErrorId {
         InvalidJsonText,
@@ -593,23 +763,290 @@ export namespace JsonElement {
         JsonValueIsNotDefined,
         JsonValueIsNotOfTypeObject,
         JsonValueIsNotOfTypeString,
+        JsonValueIsNotOfTypeStringOrNull,
         JsonValueIsNotOfTypeNumber,
+        JsonValueIsNotOfTypeNumberOrNull,
         JsonValueIsNotOfTypeBoolean,
+        JsonValueIsNotOfTypeBooleanOrNull,
         DecimalJsonValueIsNotOfTypeString,
         InvalidDecimal,
         JsonValueIsNotAnArray,
         JsonValueArrayElementIsNotAnObject,
         JsonValueArrayElementIsNotJson,
         JsonValueArrayElementIsNotAString,
+        JsonValueArrayElementIsNotAStringOrNull,
         JsonValueArrayElementIsNotANumber,
+        JsonValueArrayElementIsNotANumberOrNull,
         JsonValueArrayElementIsNotABoolean,
+        JsonValueArrayElementIsNotABooleanOrNull,
     }
 
-    export function createRootElement(rootJson: Json) {
+    export function createRootElement(rootJson: UndefinableJsonValueRecord) {
         return new JsonElement(rootJson);
     }
 
     export function tryGetChildElement(parentElement: JsonElement, childName: string) {
         return parentElement.tryGetElement(childName);
+    }
+
+    export function tryJsonValueToJson(jsonValue: JsonValue): Result<Json, JsonElement.ErrorId.JsonValueIsNotOfTypeObject> {
+        if (JsonValue.isJson(jsonValue)) {
+            return new Ok(jsonValue);
+        } else {
+            return new Err(JsonElement.ErrorId.JsonValueIsNotOfTypeObject);
+        }
+    }
+
+    export function tryJsonValueToString(jsonValue: JsonValue): Result<string, JsonElement.ErrorId.JsonValueIsNotOfTypeString> {
+        if (typeof jsonValue === 'string') {
+            return new Ok(jsonValue);
+        } else {
+            return new Err(JsonElement.ErrorId.JsonValueIsNotOfTypeString);
+        }
+    }
+
+    export function tryJsonValueToStringOrNull(jsonValue: JsonValue): Result<string | null, JsonElement.ErrorId.JsonValueIsNotOfTypeStringOrNull> {
+        if (jsonValue === null) {
+            return new Ok(jsonValue);
+        } else {
+            if (typeof jsonValue === 'string') {
+                return new Ok(jsonValue);
+            } else {
+                return new Err(JsonElement.ErrorId.JsonValueIsNotOfTypeStringOrNull);
+            }
+        }
+    }
+
+    export function tryJsonValueToNumber(jsonValue: JsonValue): Result<number, JsonElement.ErrorId.JsonValueIsNotOfTypeNumber> {
+        if (typeof jsonValue === 'number') {
+            return new Ok(jsonValue);
+        } else {
+            return new Err(JsonElement.ErrorId.JsonValueIsNotOfTypeNumber);
+        }
+    }
+
+    export function tryJsonValueToNumberOrNull(jsonValue: JsonValue): Result<number | null, JsonElement.ErrorId.JsonValueIsNotOfTypeNumberOrNull> {
+        if (jsonValue === null) {
+            return new Ok(jsonValue);
+        } else {
+            if (typeof jsonValue === 'number') {
+                return new Ok(jsonValue);
+            } else {
+                return new Err(JsonElement.ErrorId.JsonValueIsNotOfTypeNumberOrNull);
+            }
+        }
+    }
+
+    export function tryJsonValueToBoolean(jsonValue: JsonValue): Result<boolean, JsonElement.ErrorId.JsonValueIsNotOfTypeBoolean> {
+        if (typeof jsonValue === 'boolean') {
+            return new Ok(jsonValue);
+        } else {
+            return new Err(JsonElement.ErrorId.JsonValueIsNotOfTypeBoolean);
+        }
+    }
+
+    export function tryJsonValueToBooleanOrNull(jsonValue: JsonValue): Result<boolean | null, JsonElement.ErrorId.JsonValueIsNotOfTypeBooleanOrNull> {
+        if (jsonValue === null) {
+            return new Ok(jsonValue);
+        } else {
+            if (typeof jsonValue === 'boolean') {
+                return new Ok(jsonValue);
+            } else {
+                return new Err(JsonElement.ErrorId.JsonValueIsNotOfTypeBooleanOrNull);
+            }
+        }
+    }
+
+    export function tryJsonValueToElementArray(jsonValue: JsonValue): Result<JsonElement[], JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotAnObject> {
+        if (!Array.isArray(jsonValue)) {
+            return new Err(JsonElement.ErrorId.JsonValueIsNotAnArray);
+        } else {
+            const jsonValueArray = jsonValue as JsonValue[];
+            const count = jsonValueArray.length;
+            const resultArray = new Array<JsonElement>(count);
+            for (let i = 0; i < count; i++) {
+                const elementJsonValue = jsonValueArray[i];
+                if (typeof elementJsonValue === 'object') {
+                    resultArray[i] = new JsonElement(elementJsonValue as UndefinableJsonValueRecord);
+                } else {
+                    return new Err(JsonElement.ErrorId.JsonValueArrayElementIsNotAnObject);
+                }
+            }
+
+            return new Ok(resultArray);
+        }
+    }
+
+    export function tryJsonValueToJsonObjectArray(jsonValue: JsonValue): Result<Json[], JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotJson> {
+        if (!Array.isArray(jsonValue)) {
+            return new Err(JsonElement.ErrorId.JsonValueIsNotAnArray);
+        } else {
+            const jsonValueArray = jsonValue as JsonValue[];
+            const count = jsonValueArray.length;
+            const resultArray = new Array<Json>(count);
+            for (let i = 0; i < count; i++) {
+                const elementJsonValue = jsonValueArray[i];
+                if (JsonValue.isJson(elementJsonValue)) {
+                    resultArray[i] = elementJsonValue;
+                } else {
+                    return new Err(JsonElement.ErrorId.JsonValueArrayElementIsNotJson);
+                }
+            }
+
+            return new Ok(resultArray);
+        }
+    }
+
+    export function tryJsonValueToStringArray(jsonValue: JsonValue): Result<string[], JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotAString> {
+        if (!Array.isArray(jsonValue)) {
+            return new Err(JsonElement.ErrorId.JsonValueIsNotAnArray);
+        } else {
+            const jsonValueArray = jsonValue as JsonValue[];
+            const count = jsonValueArray.length;
+            const resultArray = new Array<string>(count);
+            for (let i = 0; i < count; i++) {
+                const elementJsonValue = jsonValueArray[i];
+                if (typeof elementJsonValue === 'string') {
+                    resultArray[i] = elementJsonValue;
+                } else {
+                    return new Err(JsonElement.ErrorId.JsonValueArrayElementIsNotAString);
+                }
+            }
+
+            return new Ok(resultArray);
+        }
+    }
+
+    export function tryJsonValueToStringOrNullArray(jsonValue: JsonValue): Result<(string | null)[], JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotAStringOrNull> {
+        if (!Array.isArray(jsonValue)) {
+            return new Err(JsonElement.ErrorId.JsonValueIsNotAnArray);
+        } else {
+            const jsonValueArray = jsonValue as JsonValue[];
+            const count = jsonValueArray.length;
+            const resultArray = new Array<string | null>(count);
+            for (let i = 0; i < count; i++) {
+                const elementJsonValue = jsonValueArray[i];
+                if (elementJsonValue === null) {
+                    resultArray[i] = elementJsonValue;
+                } else {
+                    if (typeof elementJsonValue === 'string') {
+                        resultArray[i] = elementJsonValue;
+                    } else {
+                        return new Err(JsonElement.ErrorId.JsonValueArrayElementIsNotAStringOrNull);
+                    }
+                }
+            }
+
+            return new Ok(resultArray);
+        }
+    }
+
+    export function tryJsonValueToNumberArray(jsonValue: JsonValue): Result<number[], JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotANumber> {
+        if (!Array.isArray(jsonValue)) {
+            return new Err(JsonElement.ErrorId.JsonValueIsNotAnArray);
+        } else {
+            const jsonValueArray = jsonValue as JsonValue[];
+            const count = jsonValueArray.length;
+            const resultArray = new Array<number>(count);
+            for (let i = 0; i < count; i++) {
+                const elementJsonValue = jsonValueArray[i];
+                if (typeof elementJsonValue === 'number') {
+                    resultArray[i] = elementJsonValue;
+                } else {
+                    return new Err(JsonElement.ErrorId.JsonValueArrayElementIsNotANumber);
+                }
+            }
+
+            return new Ok(resultArray);
+        }
+    }
+
+    export function tryJsonValueToNumberOrNullArray(jsonValue: JsonValue): Result<(number | null)[], JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotANumberOrNull> {
+        if (!Array.isArray(jsonValue)) {
+            return new Err(JsonElement.ErrorId.JsonValueIsNotAnArray);
+        } else {
+            const jsonValueArray = jsonValue as JsonValue[];
+            const count = jsonValueArray.length;
+            const resultArray = new Array<number | null>(count);
+            for (let i = 0; i < count; i++) {
+                const elementJsonValue = jsonValueArray[i];
+                if (elementJsonValue === null) {
+                    resultArray[i] = elementJsonValue;
+                } else {
+                    if (typeof elementJsonValue === 'number') {
+                        resultArray[i] = elementJsonValue;
+                    } else {
+                        return new Err(JsonElement.ErrorId.JsonValueArrayElementIsNotANumberOrNull);
+                    }
+                }
+            }
+
+            return new Ok(resultArray);
+        }
+    }
+
+    export function tryJsonValueToBooleanArray(jsonValue: JsonValue): Result<boolean[], JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotABoolean> {
+        if (!Array.isArray(jsonValue)) {
+            return new Err(JsonElement.ErrorId.JsonValueIsNotAnArray);
+        } else {
+            const jsonValueArray = jsonValue as JsonValue[];
+            const count = jsonValueArray.length;
+            const resultArray = new Array<boolean>(count);
+            for (let i = 0; i < count; i++) {
+                const elementJsonValue = jsonValueArray[i];
+                if (typeof elementJsonValue === 'boolean') {
+                    resultArray[i] = elementJsonValue;
+                } else {
+                    return new Err(JsonElement.ErrorId.JsonValueArrayElementIsNotABoolean);
+                }
+            }
+
+            return new Ok(resultArray);
+        }
+    }
+
+    export function tryJsonValueToBooleanOrNullArray(jsonValue: JsonValue): Result<(boolean | null)[], JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotABooleanOrNull> {
+        if (!Array.isArray(jsonValue)) {
+            return new Err(JsonElement.ErrorId.JsonValueIsNotAnArray);
+        } else {
+            const jsonValueArray = jsonValue as JsonValue[];
+            const count = jsonValueArray.length;
+            const resultArray = new Array<boolean | null>(count);
+            for (let i = 0; i < count; i++) {
+                const elementJsonValue = jsonValueArray[i];
+                if (elementJsonValue === null) {
+                    resultArray[i] = elementJsonValue;
+                } else {
+                    if (typeof elementJsonValue === 'boolean') {
+                        resultArray[i] = elementJsonValue;
+                    } else {
+                        return new Err(JsonElement.ErrorId.JsonValueArrayElementIsNotABooleanOrNull);
+                    }
+                }
+            }
+
+            return new Ok(resultArray);
+        }
+    }
+
+    export function tryJsonValueToJsonValueArray(jsonValue: JsonValue): Result<JsonValue[], JsonElement.ErrorId.JsonValueIsNotAnArray> {
+        if (!Array.isArray(jsonValue)) {
+            return new Err(JsonElement.ErrorId.JsonValueIsNotAnArray);
+        } else {
+            return new Ok(jsonValue);
+        }
+    }
+
+    export function tryJsonValueToDecimal(jsonValue: JsonValue): Result<SysDecimal, JsonElement.ErrorId.InvalidDecimal| JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString> {
+        if (typeof jsonValue === 'string') {
+            try {
+                const value = newDecimal(jsonValue);
+                return new Ok(value);
+            } catch (e) {
+                return new Err(JsonElement.ErrorId.InvalidDecimal);
+            }
+        } else {
+            return new Err(JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString);
+        }
     }
 }
