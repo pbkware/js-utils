@@ -1,5 +1,31 @@
 // (c) 2024 Xilytix Pty Ltd
 
+declare global {
+    // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
+    interface Window {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        [key: string]: any;
+        __pbkwareLogger__: Logger;
+    }
+}
+
+/** @public */
+export function getOrCreateLoggerGlobalAlias(loggerGlobalAliasKey: string) {
+    let globalLogger = window.__pbkwareLogger__ as Logger | undefined;
+    if (globalLogger === undefined) {
+        globalLogger = new Logger();
+        window.__pbkwareLogger__ = globalLogger;
+    }
+
+    let aliasLogger = window[loggerGlobalAliasKey] as Logger | undefined;
+    if (aliasLogger === undefined || aliasLogger !== globalLogger) {
+        aliasLogger = globalLogger;
+        window[loggerGlobalAliasKey] = aliasLogger;
+    }
+
+    return aliasLogger;
+}
+
 /** @public */
 export class Logger {
     private readonly _bufferedLogEvents = new Array<Logger.LogEvent>(); // Used to buffer events prior to Eventer being defined
@@ -17,32 +43,32 @@ export class Logger {
     }
 
     log(levelId: Logger.LevelId, text: string, maxTextLength?: number, telemetryAndExtra?: string) {
-        const logEvent = this.createLogEvent(levelId, text, maxTextLength, telemetryAndExtra)
+        const logEvent = this.createLogEvent(levelId, text, maxTextLength, telemetryAndExtra);
         this.notifyLogEvent(logEvent);
     }
 
     logDebug(text: string, maxTextLength?: number, telemetryAndExtra?: string) {
-        const logEvent = this.createLogEvent(Logger.LevelId.Debug, text, maxTextLength, telemetryAndExtra)
+        const logEvent = this.createLogEvent(Logger.LevelId.Debug, text, maxTextLength, telemetryAndExtra);
         this.notifyLogEvent(logEvent);
     }
 
     logInfo(text: string, telemetryAndExtra?: string) {
-        const logEvent = this.createLogEvent(Logger.LevelId.Info, text, undefined, telemetryAndExtra)
+        const logEvent = this.createLogEvent(Logger.LevelId.Info, text, undefined, telemetryAndExtra);
         this.notifyLogEvent(logEvent);
     }
 
     logWarning(text: string, telemetryAndExtra = '') {
-        const logEvent = this.createLogEvent(Logger.LevelId.Warning, text, undefined, telemetryAndExtra)
+        const logEvent = this.createLogEvent(Logger.LevelId.Warning, text, undefined, telemetryAndExtra);
         this.notifyLogEvent(logEvent);
     }
 
     logError(text: string, maxTextLength?: number, telemetryAndExtra = '') {
-        const logEvent = this.createLogEvent(Logger.LevelId.Error, text, maxTextLength, telemetryAndExtra)
+        const logEvent = this.createLogEvent(Logger.LevelId.Error, text, maxTextLength, telemetryAndExtra);
         this.notifyLogEvent(logEvent);
     }
 
     logSevere(text: string, maxTextLength?: number, telemetryAndExtra = '') {
-        const logEvent = this.createLogEvent(Logger.LevelId.Severe, text, maxTextLength, telemetryAndExtra)
+        const logEvent = this.createLogEvent(Logger.LevelId.Severe, text, maxTextLength, telemetryAndExtra);
         this.notifyLogEvent(logEvent);
     }
 
@@ -97,6 +123,3 @@ export namespace Logger {
         readonly telemetryAndExtra: string | undefined;
     }
 }
-
-/** @public */
-export const logger = new Logger();

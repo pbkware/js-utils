@@ -80,7 +80,7 @@ export namespace AnchoredRecordsList {
 }
 
 // @public
-export function anyBinarySearch<T>(values: T[], item: T, compare: CompareFtn<T>): BinarySearchResult;
+export function anyBinarySearch<T extends U, U = T>(values: T[], item: T, compare: CompareFtn<U>): BinarySearchResult;
 
 // @public (undocumented)
 export class AssertInternalError extends InternalError {
@@ -97,14 +97,14 @@ export namespace AssertInternalError {
 
 // @public (undocumented)
 export namespace BinaryFind {
-    export function any<T>(values: T[], compareItemFn: CompareItemFn<T>): Result;
+    export function any<T extends U, U = T>(values: T[], compareItemFn: CompareItemFn<U>): Result;
     // (undocumented)
     export type CompareItemFn<in T> = (this: void, item: T) => ComparisonResult;
-    export function earliest<T>(values: T[], compareItemFn: CompareItemFn<T>): Result;
-    export function latest<T>(values: T[], compareItemFn: CompareItemFn<T>): Result;
-    export function rangedAny<T>(values: T[], compareItemFn: CompareItemFn<T>, index: Integer, count: Integer): Result;
-    export function rangedEarliest<T>(values: T[], compareItemFn: CompareItemFn<T>, index: Integer, count: Integer): Result;
-    export function rangedLatest<T>(values: T[], compareItemFn: CompareItemFn<T>, index: Integer, count: Integer): Result;
+    export function earliest<T extends U, U = T>(values: T[], compareItemFn: CompareItemFn<U>): Result;
+    export function latest<T extends U, U = T>(values: T[], compareItemFn: CompareItemFn<U>): Result;
+    export function rangedAny<T extends U, U = T>(values: T[], compareItemFn: CompareItemFn<U>, index: Integer, count: Integer): Result;
+    export function rangedEarliest<T extends U, U = T>(values: T[], compareItemFn: CompareItemFn<U>, index: Integer, count: Integer): Result;
+    export function rangedLatest<T extends U, U = T>(values: T[], compareItemFn: CompareItemFn<U>, index: Integer, count: Integer): Result;
     // (undocumented)
     export interface Result {
         // (undocumented)
@@ -388,7 +388,7 @@ export function compareDecimal(left: SysDecimal, right: SysDecimal): number;
 export function compareEnum<T extends number>(left: T, right: T): ComparisonResult;
 
 // @public (undocumented)
-export type CompareFtn<in T> = (this: void, left: T, right: T) => ComparisonResult;
+export type CompareFtn<T> = (this: void, left: T, right: T) => ComparisonResult;
 
 // @public (undocumented)
 export function compareInteger(left: Integer, right: Integer): ComparisonResult;
@@ -524,7 +524,7 @@ export function deepExtendValue(existingTarget: unknown, value: unknown): unknow
 export function delay1Tick(ftn: () => void): ReturnType<typeof setTimeout>;
 
 // @public
-export function earliestBinarySearch<T>(values: T[], item: T, compare: CompareFtn<T>): BinarySearchResult;
+export function earliestBinarySearch<T extends U, U = T>(values: T[], item: T, compare: CompareFtn<U>): BinarySearchResult;
 
 // @public (undocumented)
 export class EnumInfoOutOfOrderError extends InternalError {
@@ -555,7 +555,7 @@ export namespace Err {
 }
 
 // @public (undocumented)
-export function firstLastRangedQuickSort<T>(values: T[], compareFtn: CompareFtn<T>, firstIdx: Integer, lastIdx: Integer): void;
+export function firstLastRangedQuickSort<T extends U, U = T>(values: T[], compareFtn: CompareFtn<U>, firstIdx: Integer, lastIdx: Integer): void;
 
 // @public (undocumented)
 export function getElementDocumentPosition(element: HTMLElement): {
@@ -568,6 +568,9 @@ export function getElementDocumentPositionRect(element: HTMLElement): Rect;
 
 // @public (undocumented)
 export function getErrorMessage(e: unknown, defaultMessage?: string): string;
+
+// @public (undocumented)
+export function getOrCreateLoggerGlobalAlias(loggerGlobalAliasKey: string): Logger;
 
 // @public (undocumented)
 export function getUniqueElementArraysOverlapElements<T>(left: readonly T[], right: readonly T[]): T[];
@@ -1109,7 +1112,7 @@ export namespace JsonValue {
 export type JsonValueArray = JsonValue[];
 
 // @public
-export function latestBinarySearch<T>(values: T[], item: T, compare: CompareFtn<T>): BinarySearchResult;
+export function latestBinarySearch<T extends U, U = T>(values: T[], item: T, compare: CompareFtn<U>): BinarySearchResult;
 
 // @public (undocumented)
 export interface Line {
@@ -1265,9 +1268,6 @@ export namespace Logger {
         constructor(code: string, value: never);
     }
 }
-
-// @public (undocumented)
-export const logger: Logger;
 
 // @public (undocumented)
 export type MapKey = string;
@@ -1531,19 +1531,19 @@ export function priorityCompareInteger(left: Integer, right: Integer, priority: 
 export function priorityCompareString(left: string, right: string, priority: string): ComparisonResult;
 
 // @public (undocumented)
-export function quickSort<T>(values: T[], compareFtn: CompareFtn<T>): void;
+export function quickSort<T extends U, U = T>(values: T[], compareFtn: CompareFtn<U>): void;
 
 // @public
-export function rangedAnyBinarySearch<T>(values: T[], item: T, compare: CompareFtn<T>, index: Integer, count: Integer): BinarySearchResult;
+export function rangedAnyBinarySearch<T extends U, U = T>(values: T[], item: T, compare: CompareFtn<U>, index: Integer, count: Integer): BinarySearchResult;
 
 // @public
-export function rangedEarliestBinarySearch<T>(values: T[], item: T, compare: CompareFtn<T>, index: Integer, count: Integer): BinarySearchResult;
+export function rangedEarliestBinarySearch<T extends U, U = T>(values: T[], item: T, compare: CompareFtn<U>, index: Integer, count: Integer): BinarySearchResult;
 
 // @public
-export function rangedLatestBinarySearch<T>(values: T[], item: T, compare: CompareFtn<T>, index: Integer, count: Integer): BinarySearchResult;
+export function rangedLatestBinarySearch<T extends U, U = T>(values: T[], item: T, compare: CompareFtn<U>, index: Integer, count: Integer): BinarySearchResult;
 
 // @public (undocumented)
-export function rangedQuickSort<T>(values: T[], compareFtn: CompareFtn<T>, index: Integer, count: Integer): void;
+export function rangedQuickSort<T extends U, U = T>(values: T[], compareFtn: CompareFtn<U>, index: Integer, count: Integer): void;
 
 // @public (undocumented)
 export interface RecordList<Record> {
@@ -1769,7 +1769,7 @@ export type SysNumeric = Numeric;
 // @public (undocumented)
 export namespace SysTick {
     // (undocumented)
-    export function compare(left: Time, right: Time): Span;
+    export function compare(left: Time, right: Time): ComparisonResult;
     // (undocumented)
     export function now(): number;
     // (undocumented)

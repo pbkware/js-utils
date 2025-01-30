@@ -1,6 +1,5 @@
 // (c) 2024 Xilytix Pty Ltd
 
-import { logger } from './logger';
 
 /** @public */
 export abstract class InternalError extends Error {
@@ -9,7 +8,7 @@ export abstract class InternalError extends Error {
             `${errorType}: ${code}`
             :
             `${errorType}: ${code}: ${message}`);
-        logger.logError(this.message, 120);
+        window.__pbkwareLogger__.logError(this.message, 120);
     }
 }
 
