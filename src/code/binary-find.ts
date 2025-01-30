@@ -16,9 +16,9 @@ export namespace BinaryFind {
     /** Finds any matching index.  Use if index values are unique
      * @public
      */
-    export function any<T>(
+    export function any<T extends U, U = T>(
         values: T[],
-        compareItemFn: CompareItemFn<T>
+        compareItemFn: CompareItemFn<U>
     ) {
         return rangedAny(values, compareItemFn, 0, values.length);
     }
@@ -26,9 +26,9 @@ export namespace BinaryFind {
     /** Finds any matching index in range.  Use if index values are unique
      * @public
      */
-    export function rangedAny<T>(
+    export function rangedAny<T extends U, U = T>(
         values: T[],
-        compareItemFn: CompareItemFn<T>,
+        compareItemFn: CompareItemFn<U>,
         index: Integer,
         count: Integer
     ): Result {
@@ -72,9 +72,9 @@ export namespace BinaryFind {
      * @public
      */
 
-    export function earliest<T>(
+    export function earliest<T extends U, U = T>(
         values: T[],
-        compareItemFn: CompareItemFn<T>
+        compareItemFn: CompareItemFn<U>
     ) {
         return rangedEarliest(values, compareItemFn, 0, values.length);
     }
@@ -82,9 +82,9 @@ export namespace BinaryFind {
     /** Finds earliest matching index in range.  Use if index values are not unique
      * @public
      */
-    export function rangedEarliest<T>(
+    export function rangedEarliest<T extends U, U = T>(
         values: T[],
-        compareItemFn: CompareItemFn<T>,
+        compareItemFn: CompareItemFn<U>,
         index: Integer,
         count: Integer
     ): Result {
@@ -126,9 +126,9 @@ export namespace BinaryFind {
     /** Finds earliest matching index.  Use if index values are not unique
      * @public
      */
-    export function latest<T>(
+    export function latest<T extends U, U = T>(
         values: T[],
-        compareItemFn: CompareItemFn<T>
+        compareItemFn: CompareItemFn<U>
     ) {
         return rangedLatest(values, compareItemFn, 0, values.length);
     }
@@ -136,9 +136,9 @@ export namespace BinaryFind {
     /** Finds latest matching index.  Use if index values are not unique
      * @public
      */
-    export function rangedLatest<T>(
+    export function rangedLatest<T extends U, U = T>(
         values: T[],
-        compareItemFn: CompareItemFn<T>,
+        compareItemFn: CompareItemFn<U>,
         index: Integer,
         count: Integer
     ): Result {

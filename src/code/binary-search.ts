@@ -10,15 +10,15 @@ export interface BinarySearchResult {
 }
 
 /** @public */
-export type CompareFtn<in T> = (this: void, left: T, right: T) => ComparisonResult;
+export type CompareFtn<T> = (this: void, left: T, right: T) => ComparisonResult;
 
 /** Finds any matching index.  Use if index values are unique
  * @public
  */
-export function anyBinarySearch<T>(
+export function anyBinarySearch<T extends U, U = T>(
     values: T[],
     item: T,
-    compare: CompareFtn<T>
+    compare: CompareFtn<U>
 ) {
     return rangedAnyBinarySearch(values, item, compare, 0, values.length);
 }
@@ -26,10 +26,10 @@ export function anyBinarySearch<T>(
 /** Finds any matching index in range.  Use if index values are unique
  * @public
  */
-export function rangedAnyBinarySearch<T>(
+export function rangedAnyBinarySearch<T extends U, U = T>(
     values: T[],
     item: T,
-    compare: CompareFtn<T>,
+    compare: CompareFtn<U>,
     index: Integer,
     count: Integer
 ): BinarySearchResult {
@@ -73,10 +73,10 @@ export function rangedAnyBinarySearch<T>(
  * @public
  */
 
-export function earliestBinarySearch<T>(
+export function earliestBinarySearch<T extends U, U = T>(
     values: T[],
     item: T,
-    compare: CompareFtn<T>
+    compare: CompareFtn<U>
 ) {
     return rangedEarliestBinarySearch(values, item, compare, 0, values.length);
 }
@@ -84,10 +84,10 @@ export function earliestBinarySearch<T>(
 /** Finds earliest matching index in range.  Use if index values are not unique
  * @public
  */
-export function rangedEarliestBinarySearch<T>(
+export function rangedEarliestBinarySearch<T extends U, U = T>(
     values: T[],
     item: T,
-    compare: CompareFtn<T>,
+    compare: CompareFtn<U>,
     index: Integer,
     count: Integer
 ): BinarySearchResult {
@@ -129,10 +129,10 @@ export function rangedEarliestBinarySearch<T>(
 /** Finds earliest matching index.  Use if index values are not unique
  * @public
  */
-export function latestBinarySearch<T>(
+export function latestBinarySearch<T extends U, U = T>(
     values: T[],
     item: T,
-    compare: CompareFtn<T>
+    compare: CompareFtn<U>
 ) {
     return rangedLatestBinarySearch(values, item, compare, 0, values.length);
 }
@@ -140,10 +140,10 @@ export function latestBinarySearch<T>(
 /** Finds latest matching index.  Use if index values are not unique
  * @public
  */
-export function rangedLatestBinarySearch<T>(
+export function rangedLatestBinarySearch<T extends U, U = T>(
     values: T[],
     item: T,
-    compare: CompareFtn<T>,
+    compare: CompareFtn<U>,
     index: Integer,
     count: Integer
 ): BinarySearchResult {
@@ -183,17 +183,17 @@ export function rangedLatestBinarySearch<T>(
 }
 
 /** @public */
-export function quickSort<T>(values: T[], compareFtn: CompareFtn<T>) {
+export function quickSort<T extends U, U = T>(values: T[], compareFtn: CompareFtn<U>) {
     firstLastRangedQuickSort(values, compareFtn, 0, values.length - 1);
 }
 
 /** @public */
-export function rangedQuickSort<T>(values: T[], compareFtn: CompareFtn<T>, index: Integer, count: Integer) {
+export function rangedQuickSort<T extends U, U = T>(values: T[], compareFtn: CompareFtn<U>, index: Integer, count: Integer) {
     firstLastRangedQuickSort(values, compareFtn, index, index + count - 1);
 }
 
 /** @public */
-export function firstLastRangedQuickSort<T>(values: T[], compareFtn: CompareFtn<T>, firstIdx: Integer, lastIdx: Integer) {
+export function firstLastRangedQuickSort<T extends U, U = T>(values: T[], compareFtn: CompareFtn<U>, firstIdx: Integer, lastIdx: Integer) {
     if (values.length > 0 && (lastIdx - firstIdx) > 0) {
         let i = firstIdx;
         let j = lastIdx;

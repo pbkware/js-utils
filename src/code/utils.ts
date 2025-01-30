@@ -1076,7 +1076,7 @@ export namespace SysTick {
         return toDate(now());
     }
 
-    export function compare(left: Time, right: Time): Span {
+    export function compare(left: Time, right: Time): ComparisonResult {
         return compareNumber(left, right);
     }
 
