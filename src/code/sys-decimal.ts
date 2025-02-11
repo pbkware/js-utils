@@ -54,7 +54,7 @@ export function newDecimal(value: Numeric): SysDecimal {
 
 /** @public */
 export function newUndefinableDecimal(value: SysNumeric | undefined): SysDecimal | undefined {
-    return value === undefined ? undefined : new Decimal(value);
+    return value === undefined ? undefined : newDecimal(value);
 }
 
 /** @public */

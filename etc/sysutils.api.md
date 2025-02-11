@@ -6,7 +6,6 @@
 
 import { Config } from 'decimal.js-light';
 import { Decimal } from 'decimal.js-light';
-import { default as default_2 } from 'decimal.js-light';
 import { Numeric } from 'decimal.js-light';
 
 // @public (undocumented)
@@ -839,7 +838,7 @@ export class JsonElement {
     // (undocumented)
     getDateTime(name: string, defaultValue: Date): Date;
     // (undocumented)
-    getDecimal(name: string, defaultValue: SysDecimal): default_2;
+    getDecimal(name: string, defaultValue: SysDecimal): SysDecimal;
     // (undocumented)
     getGuid(name: string, defaultValue: Guid): string;
     // (undocumented)

@@ -579,7 +579,7 @@ export class JsonElement {
         }
     }
 
-    getDecimal(name: string, defaultValue: SysDecimal) {
+    getDecimal(name: string, defaultValue: SysDecimal): SysDecimal {
         const tryResult = this.tryGetDecimal(name);
         return tryResult.isErr() ? defaultValue : tryResult.value;
     }
