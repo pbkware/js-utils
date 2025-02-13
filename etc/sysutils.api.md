@@ -185,7 +185,7 @@ export function checkEscapeCharForRegexOutsideCharClass(char: string): string;
 export function checkLimitTextLength(text: string, maxTextLength: number | undefined): string;
 
 // @public (undocumented)
-export function cloneDecimal(config: SysDecimalConfig): SysDecimalConstructor;
+export function cloneDecimal(config: Config): DecimalConstructor;
 
 // @public (undocumented)
 export namespace CommaText {
@@ -381,7 +381,7 @@ export function compareBoolean(left: boolean, right: boolean): ComparisonResult;
 export function compareDate(left: Date, right: Date): ComparisonResult;
 
 // @public (undocumented)
-export function compareDecimal(left: SysDecimal, right: SysDecimal): number;
+export function compareDecimal(left: Decimal, right: Decimal): number;
 
 // @public (undocumented)
 export function compareEnum<T extends number>(left: T, right: T): ComparisonResult;
@@ -405,7 +405,7 @@ export function compareUndefinableBoolean(left: boolean | undefined, right: bool
 export function compareUndefinableDate(left: Date | undefined, right: Date | undefined, undefinedIsLowest: boolean): ComparisonResult;
 
 // @public (undocumented)
-export function compareUndefinableDecimal(left: SysDecimal | undefined, right: SysDecimal | undefined, undefinedIsLowest: boolean): number;
+export function compareUndefinableDecimal(left: Decimal | undefined, right: Decimal | undefined, undefinedIsLowest: boolean): number;
 
 // @public (undocumented)
 export function compareUndefinableEnum<T extends number>(left: T | undefined, right: T | undefined, undefinedIsLowest: boolean): ComparisonResult;
@@ -509,6 +509,9 @@ export const enum DayOfWeek {
     // (undocumented)
     Wednesday = 3
 }
+
+// @public (undocumented)
+export type DecimalConstructor = new (numeric: Numeric) => Decimal;
 
 // @public (undocumented)
 export function deepClone(object: Record<string, unknown>): unknown;
@@ -715,13 +718,13 @@ export function isArrayEqualUniquely<T>(left: readonly T[], right: readonly T[])
 export function isDateEqual(left: Date, right: Date): boolean;
 
 // @public (undocumented)
-export function isDecimalEqual(left: SysDecimal, right: SysDecimal): boolean;
+export function isDecimalEqual(left: Decimal, right: Decimal): boolean;
 
 // @public (undocumented)
-export function isDecimalGreaterThan(subject: SysDecimal, other: SysDecimal): boolean;
+export function isDecimalGreaterThan(subject: Decimal, other: Decimal): boolean;
 
 // @public (undocumented)
-export function isDecimalLessThan(subject: SysDecimal, other: SysDecimal): boolean;
+export function isDecimalLessThan(subject: Decimal, other: Decimal): boolean;
 
 // @public (undocumented)
 export function isDigitCharCode(charCode: number): boolean;
@@ -799,7 +802,7 @@ export function isUndefinableArrayEqualUniquely<T>(left: readonly T[] | undefine
 export function isUndefinableDateEqual(left: Date | undefined, right: Date | undefined): boolean;
 
 // @public (undocumented)
-export function isUndefinableDecimalEqual(left: SysDecimal | undefined, right: SysDecimal | undefined): boolean;
+export function isUndefinableDecimalEqual(left: Decimal | undefined, right: Decimal | undefined): boolean;
 
 // @public (undocumented)
 export function isUndefinableStringNumberBooleanNestArrayEqual(left: unknown[] | undefined, right: unknown[] | undefined): boolean;
@@ -838,7 +841,7 @@ export class JsonElement {
     // (undocumented)
     getDateTime(name: string, defaultValue: Date): Date;
     // (undocumented)
-    getDecimal(name: string, defaultValue: SysDecimal): SysDecimal;
+    getDecimal(name: string, defaultValue: Decimal): Decimal;
     // (undocumented)
     getGuid(name: string, defaultValue: Guid): string;
     // (undocumented)
@@ -870,7 +873,7 @@ export class JsonElement {
     // (undocumented)
     setDateTime(name: string, value: Date | undefined): void;
     // (undocumented)
-    setDecimal(name: string, value: SysDecimal | undefined): void;
+    setDecimal(name: string, value: Decimal | undefined): void;
     // (undocumented)
     setElement(name: string, value: JsonElement | undefined): void;
     // (undocumented)
@@ -912,7 +915,7 @@ export class JsonElement {
     // (undocumented)
     tryGetDateTime(name: string): Result<Date, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeString>;
     // (undocumented)
-    tryGetDecimal(name: string): Result<SysDecimal, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.InvalidDecimal | JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString>;
+    tryGetDecimal(name: string): Result<Decimal, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.InvalidDecimal | JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString>;
     // (undocumented)
     tryGetDefinedNumber(name: string): Result<number | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeNumber>;
     // (undocumented)
@@ -962,7 +965,7 @@ export class JsonElement {
     // (undocumented)
     tryGetUndefinableDateTime(name: string): Result<Date | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeString>;
     // (undocumented)
-    tryGetUndefinableDecimal(name: string): Result<SysDecimal | undefined, JsonElement.ErrorId.InvalidDecimal | JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString>;
+    tryGetUndefinableDecimal(name: string): Result<Decimal | undefined, JsonElement.ErrorId.InvalidDecimal | JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString>;
     // (undocumented)
     tryGetUndefinableElement(name: string): Result<JsonElement | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeObject>;
     // (undocumented)
@@ -1067,7 +1070,7 @@ export namespace JsonElement {
     // (undocumented)
     export function tryJsonValueToBooleanOrNullArray(jsonValue: JsonValue): Result<(boolean | null)[], JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotABooleanOrNull>;
     // (undocumented)
-    export function tryJsonValueToDecimal(jsonValue: JsonValue): Result<SysDecimal, JsonElement.ErrorId.InvalidDecimal | JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString>;
+    export function tryJsonValueToDecimal(jsonValue: JsonValue): Result<Decimal, JsonElement.ErrorId.InvalidDecimal | JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString>;
     // (undocumented)
     export function tryJsonValueToElementArray(jsonValue: JsonValue): Result<JsonElement[], JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotAnObject>;
     // (undocumented)
@@ -1434,7 +1437,7 @@ export type NamedOpener = NamedLocker;
 export function newDate(value: Date): Date;
 
 // @public (undocumented)
-export function newDecimal(value: Numeric): SysDecimal;
+export function newDecimal(value: Numeric): Decimal;
 
 // @public (undocumented)
 export function newGuid(): string;
@@ -1449,10 +1452,10 @@ export function newNullDate(): Date;
 export function newUndefinableDate(value: Date | undefined): Date | undefined;
 
 // @public (undocumented)
-export function newUndefinableDecimal(value: SysNumeric | undefined): SysDecimal | undefined;
+export function newUndefinableDecimal(value: Numeric | undefined): Decimal | undefined;
 
 // @public (undocumented)
-export function newUndefinableNullableDecimal(value: SysNumeric | undefined | null): Decimal | null | undefined;
+export function newUndefinableNullableDecimal(value: Numeric | undefined | null): Decimal | null | undefined;
 
 // @public (undocumented)
 export class NotifyMultiEvent extends MultiEvent<() => void> {
@@ -1704,66 +1707,6 @@ export function subtractElementFromArray<T>(array: readonly T[], element: T): T[
 
 // @public
 export function subtractElementFromArrayUniquely<T>(array: readonly T[], element: T): T[];
-
-// @public (undocumented)
-export type SysDecimal = Decimal;
-
-// @public (undocumented)
-export namespace SysDecimal {
-    const // (undocumented)
-    ROUND_UP: number;
-    const // (undocumented)
-    ROUND_DOWN: number;
-    const // (undocumented)
-    ROUND_CEIL: number;
-    const // (undocumented)
-    ROUND_FLOOR: number;
-    const // (undocumented)
-    ROUND_HALF_UP: number;
-    const // (undocumented)
-    ROUND_HALF_DOWN: number;
-    const // (undocumented)
-    ROUND_HALF_EVEN: number;
-    const // (undocumented)
-    ROUND_HALF_CEIL: number;
-    const // (undocumented)
-    ROUND_HALF_FLOOR: number;
-    // (undocumented)
-    export function config(value: SysDecimalConfig): void;
-    // (undocumented)
-    export function getLN10(): SysDecimal;
-    // (undocumented)
-    export function getPrecision(): number;
-    // (undocumented)
-    export function getRounding(): Rounding;
-    // (undocumented)
-    export function getToExpNeg(): number;
-    // (undocumented)
-    export function getToExpPos(): number;
-    // (undocumented)
-    export type Rounding = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-    // (undocumented)
-    export function set(value: SysDecimalConfig): void;
-    // (undocumented)
-    export function setLN10(value: SysDecimal): Decimal;
-    // (undocumented)
-    export function setPrecision(value: number): number;
-    // (undocumented)
-    export function setRounding(value: Rounding): Rounding;
-    // (undocumented)
-    export function setToExpNeg(value: number): number;
-    // (undocumented)
-    export function setToExpPos(value: number): number;
-}
-
-// @public (undocumented)
-export type SysDecimalConfig = Config;
-
-// @public (undocumented)
-export type SysDecimalConstructor = new (numeric: SysNumeric) => SysDecimal;
-
-// @public (undocumented)
-export type SysNumeric = Numeric;
 
 // @public (undocumented)
 export namespace SysTick {
