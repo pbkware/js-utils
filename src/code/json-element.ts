@@ -1,7 +1,7 @@
 // (c) 2024 Xilytix Pty Ltd
 
 import { Decimal } from 'decimal.js-light';
-import { newDecimal } from './decimal-utils';
+import { DecimalFactory } from './decimal-factory';
 import { UnreachableCaseError } from './internal-error';
 import { Err, Ok, Result } from './result';
 import { Guid, Integer, Json, JsonValue } from './types';
@@ -562,26 +562,32 @@ export class JsonElement {
         return tryResult.isErr() ? defaultValue : tryResult.value;
     }
 
-    tryGetDecimal(name: string): Result<Decimal, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.InvalidDecimal | JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString> {
+    tryGetDecimal(
+        name: string,
+        decimalFactory: DecimalFactory,
+    ): Result<Decimal, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.InvalidDecimal | JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString> {
         const jsonValue = this._json[name];
         if (jsonValue === undefined) {
             return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
         } else {
-            return JsonElement.tryJsonValueToDecimal(jsonValue);
+            return JsonElement.tryJsonValueToDecimal(jsonValue, decimalFactory);
         }
     }
 
-    tryGetUndefinableDecimal(name: string): Result<Decimal | undefined, JsonElement.ErrorId.InvalidDecimal| JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString> {
+    tryGetUndefinableDecimal(
+        name: string,
+        decimalFactory: DecimalFactory
+    ): Result<Decimal | undefined, JsonElement.ErrorId.InvalidDecimal| JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString> {
         const jsonValue = this._json[name];
         if (jsonValue === undefined) {
             return new Ok(undefined);
         } else {
-            return JsonElement.tryJsonValueToDecimal(jsonValue);
+            return JsonElement.tryJsonValueToDecimal(jsonValue, decimalFactory);
         }
     }
 
-    getDecimal(name: string, defaultValue: Decimal): Decimal {
-        const tryResult = this.tryGetDecimal(name);
+    getDecimal(name: string, defaultValue: Decimal, decimalFactory: DecimalFactory): Decimal {
+        const tryResult = this.tryGetDecimal(name, decimalFactory);
         return tryResult.isErr() ? defaultValue : tryResult.value;
     }
 
@@ -1038,10 +1044,13 @@ export namespace JsonElement {
         }
     }
 
-    export function tryJsonValueToDecimal(jsonValue: JsonValue): Result<Decimal, JsonElement.ErrorId.InvalidDecimal| JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString> {
+    export function tryJsonValueToDecimal(
+        jsonValue: JsonValue,
+        decimalFactory: DecimalFactory
+    ): Result<Decimal, JsonElement.ErrorId.InvalidDecimal| JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString> {
         if (typeof jsonValue === 'string') {
             try {
-                const value = newDecimal(jsonValue);
+                const value = decimalFactory.newDecimal(jsonValue);
                 return new Ok(value);
             } catch (e) {
                 return new Err(JsonElement.ErrorId.InvalidDecimal);

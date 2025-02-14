@@ -1,35 +1,5 @@
-import { Config, Decimal, Numeric } from 'decimal.js-light';
+import { Decimal } from 'decimal.js-light';
 import { ComparisonResult } from './types';
-
-/** @public */
-export type DecimalConstructor = new (numeric: Numeric) => Decimal;
-
-/** @public */
-export const nullDecimal = newDecimal(-999999999999999.0);
-
-/** @public */
-export function newDecimal(value: Numeric): Decimal {
-    return new Decimal(value);
-}
-
-/** @public */
-export function newUndefinableDecimal(value: Numeric | undefined): Decimal | undefined {
-    return value === undefined ? undefined : newDecimal(value);
-}
-
-/** @public */
-export function cloneDecimal(config: Config): DecimalConstructor {
-    return Decimal.clone(config);
-}
-
-/** @public */
-export function newUndefinableNullableDecimal(value: Numeric | undefined | null) {
-    if (value === null) {
-        return null;
-    } else {
-        return newUndefinableDecimal(value);
-    }
-}
 
 /** @public */
 export function isDecimalEqual(left: Decimal, right: Decimal) {

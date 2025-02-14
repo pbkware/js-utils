@@ -7,6 +7,7 @@ export * from './change-subscribable-comparable-list';
 export * from './comma-text';
 export * from './comparable-list';
 export * from './correctness-state';
+export * from './decimal-factory';
 export * from './decimal-utils';
 export * from './html-types';
 export * from './internal-error';

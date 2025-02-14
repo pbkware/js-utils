@@ -185,9 +185,6 @@ export function checkEscapeCharForRegexOutsideCharClass(char: string): string;
 export function checkLimitTextLength(text: string, maxTextLength: number | undefined): string;
 
 // @public (undocumented)
-export function cloneDecimal(config: Config): DecimalConstructor;
-
-// @public (undocumented)
 export namespace CommaText {
     const // (undocumented)
     delimiterChar = ",";
@@ -512,6 +509,20 @@ export const enum DayOfWeek {
 
 // @public (undocumented)
 export type DecimalConstructor = new (numeric: Numeric) => Decimal;
+
+// @public (undocumented)
+export interface DecimalFactory {
+    // (undocumented)
+    cloneDecimal(config: Config): DecimalConstructor;
+    // (undocumented)
+    newDecimal(value: Numeric): Decimal;
+    // (undocumented)
+    newUndefinableDecimal(value: Numeric | undefined): Decimal | undefined;
+    // (undocumented)
+    newUndefinableNullableDecimal(value: Numeric | undefined | null): Decimal | null | undefined;
+    // (undocumented)
+    readonly nullDecimal: Decimal;
+}
 
 // @public (undocumented)
 export function deepClone(object: Record<string, unknown>): unknown;
@@ -841,7 +852,7 @@ export class JsonElement {
     // (undocumented)
     getDateTime(name: string, defaultValue: Date): Date;
     // (undocumented)
-    getDecimal(name: string, defaultValue: Decimal): Decimal;
+    getDecimal(name: string, defaultValue: Decimal, decimalFactory: DecimalFactory): Decimal;
     // (undocumented)
     getGuid(name: string, defaultValue: Guid): string;
     // (undocumented)
@@ -915,7 +926,7 @@ export class JsonElement {
     // (undocumented)
     tryGetDateTime(name: string): Result<Date, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeString>;
     // (undocumented)
-    tryGetDecimal(name: string): Result<Decimal, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.InvalidDecimal | JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString>;
+    tryGetDecimal(name: string, decimalFactory: DecimalFactory): Result<Decimal, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.InvalidDecimal | JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString>;
     // (undocumented)
     tryGetDefinedNumber(name: string): Result<number | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeNumber>;
     // (undocumented)
@@ -965,7 +976,7 @@ export class JsonElement {
     // (undocumented)
     tryGetUndefinableDateTime(name: string): Result<Date | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeString>;
     // (undocumented)
-    tryGetUndefinableDecimal(name: string): Result<Decimal | undefined, JsonElement.ErrorId.InvalidDecimal | JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString>;
+    tryGetUndefinableDecimal(name: string, decimalFactory: DecimalFactory): Result<Decimal | undefined, JsonElement.ErrorId.InvalidDecimal | JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString>;
     // (undocumented)
     tryGetUndefinableElement(name: string): Result<JsonElement | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeObject>;
     // (undocumented)
@@ -1070,7 +1081,7 @@ export namespace JsonElement {
     // (undocumented)
     export function tryJsonValueToBooleanOrNullArray(jsonValue: JsonValue): Result<(boolean | null)[], JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotABooleanOrNull>;
     // (undocumented)
-    export function tryJsonValueToDecimal(jsonValue: JsonValue): Result<Decimal, JsonElement.ErrorId.InvalidDecimal | JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString>;
+    export function tryJsonValueToDecimal(jsonValue: JsonValue, decimalFactory: DecimalFactory): Result<Decimal, JsonElement.ErrorId.InvalidDecimal | JsonElement.ErrorId.DecimalJsonValueIsNotOfTypeString>;
     // (undocumented)
     export function tryJsonValueToElementArray(jsonValue: JsonValue): Result<JsonElement[], JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotAnObject>;
     // (undocumented)
@@ -1437,9 +1448,6 @@ export type NamedOpener = NamedLocker;
 export function newDate(value: Date): Date;
 
 // @public (undocumented)
-export function newDecimal(value: Numeric): Decimal;
-
-// @public (undocumented)
 export function newGuid(): string;
 
 // @public (undocumented)
@@ -1450,12 +1458,6 @@ export function newNullDate(): Date;
 
 // @public (undocumented)
 export function newUndefinableDate(value: Date | undefined): Date | undefined;
-
-// @public (undocumented)
-export function newUndefinableDecimal(value: Numeric | undefined): Decimal | undefined;
-
-// @public (undocumented)
-export function newUndefinableNullableDecimal(value: Numeric | undefined | null): Decimal | null | undefined;
 
 // @public (undocumented)
 export class NotifyMultiEvent extends MultiEvent<() => void> {
@@ -1476,9 +1478,6 @@ export class NotImplementedError extends InternalError {
 
 // @public (undocumented)
 export const nullDate: Date;
-
-// @public (undocumented)
-export const nullDecimal: Decimal;
 
 // @public (undocumented)
 export function numberToPixels(value: number): string;
