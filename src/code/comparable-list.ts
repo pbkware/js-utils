@@ -29,6 +29,22 @@ export class ComparableList<out T extends U, in U = T> {
     get count(): Integer { return this._count; }
     set count(value: Integer) { this.setCount(value); }
 
+    [Symbol.iterator]() {
+        let i = 0;
+        const items = this.items;
+        const count = this._count;
+        return {
+            next() {
+                if(i < count) {
+                    return { value: items[i++], done: false };
+                } else {
+                    return { done: true };
+                }
+            }
+        };
+    }
+
+
     clone(): ComparableList<T, U> {
         const result = new ComparableList<T, U>(this._compareItemsFtn);
         result.assign(this);

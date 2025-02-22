@@ -261,6 +261,16 @@ export namespace CommaText {
 
 // @public (undocumented)
 export class ComparableList<out T extends U, in U = T> {
+    // (undocumented)
+    [Symbol.iterator](): {
+        next(): {
+            value: T;
+            done: boolean;
+        } | {
+            done: boolean;
+            value?: undefined;
+        };
+    };
     constructor(compareItemsFtn?: CompareFtn<U>);
     // (undocumented)
     add(value: T): number;
