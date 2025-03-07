@@ -1,1 +1,2 @@
-This package contains the System types, constants and utilities for Xilytix Typescript packages
+Contains JavaScript utility types, constants and functions
+In the future, various utilities included will be extracted into their own packages

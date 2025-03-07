@@ -1,22 +1,22 @@
 {
-  "name": "@pbkware/javascript-utils",
+  "name": "@pbkware/js-utils",
   "version": "0.8.0",
   "description": "Javascript utility types, constants and functions",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/pbkware/javascript-utils.git"
+    "url": "git+ssh://git@github.com/pbkware/js-utils.git"
   },
   "keywords": [
     "Utilities"
   ],
-  "homepage": "https://pbkware.klink.au/javascript-utils",
+  "homepage": "https://pbkware.klink.au/js-utils",
   "author": {
     "name": "Paul Klink",
     "url": "https://paul.klink.au/"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/pbkware/javascript-utils/issues"
+    "url": "https://github.com/pbkware/js-utils/issues"
   },
   "module": "dist/code/public-api.js",
   "typings": "dist/types/public-api.d.ts",
