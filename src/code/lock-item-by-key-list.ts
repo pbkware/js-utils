@@ -1,4 +1,3 @@
-// (c) 2024 Xilytix Pty Ltd
 
 import { LockOpenListItem } from './lock-open-list-item';
 // import { MultiEvent } from './multi-event';

@@ -1,4 +1,3 @@
-// (c) 2024 Xilytix Pty Ltd
 
 import { UnreachableCaseError } from './internal-error';
 import { Iso8601 } from './iso8601';

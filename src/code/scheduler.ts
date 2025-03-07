@@ -1,4 +1,3 @@
-// (c) 2024 Xilytix Pty Ltd
 
 // Scheduler allows you to create a timer which will provide a call back after a specified interval
 // The timer can auto restart after the callback

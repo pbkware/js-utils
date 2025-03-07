@@ -1,9 +1,8 @@
-// (c) 2024 Xilytix Pty Ltd
 
 import { BinaryFind } from './binary-find';
 import { BinarySearchResult, CompareFtn, rangedAnyBinarySearch, rangedEarliestBinarySearch, rangedLatestBinarySearch, rangedQuickSort } from './binary-search';
 import { AssertInternalError } from './internal-error';
-import { ComparisonResult, Integer } from './types';
+import { ComparisonResult, type Integer } from './types';
 import { moveElementInArray, moveElementsInArray } from './utils';
 
 /** @public */

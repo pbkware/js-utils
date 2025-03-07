@@ -1,4 +1,3 @@
-// (c) 2024 Xilytix Pty Ltd
 
 import { AssertInternalError } from './internal-error';
 import { LockOpenListItem } from './lock-open-list-item';

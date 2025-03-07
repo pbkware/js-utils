@@ -1,4 +1,3 @@
-// (c) 2024 Xilytix Pty Ltd
 
 export * from './anchored-records-list';
 export * from './binary-find';

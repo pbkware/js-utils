@@ -1,4 +1,3 @@
-// (c) 2024 Xilytix Pty Ltd
 
 declare global {
     // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style

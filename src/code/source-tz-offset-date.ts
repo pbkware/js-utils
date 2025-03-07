@@ -1,4 +1,3 @@
-// (c) 2024 Xilytix Pty Ltd
 
 import { Iso8601 } from './iso8601';
 import { ComparisonResult, Integer } from './types';

@@ -1,4 +1,3 @@
-// (c) 2024 Xilytix Pty Ltd
 
 import { Decimal } from 'decimal.js-light';
 import { DecimalFactory } from './decimal-factory';

@@ -1,4 +1,3 @@
-// (c) 2024 Xilytix Pty Ltd
 
 import { NamedLocker, NamedOpener } from './named-locker';
 import { Result } from './result';

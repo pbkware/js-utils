@@ -1,9 +1,8 @@
-// (c) 2024 Xilytix Pty Ltd
 
 import { ComparableList } from './comparable-list';
 import { MultiEvent } from './multi-event';
 import { RecordList } from './record-list';
-import { Integer, } from './types';
+import type { Integer } from './types';
 import { UsableListChangeType, UsableListChangeTypeId } from './usable-list-change-type';
 
 /** @public */

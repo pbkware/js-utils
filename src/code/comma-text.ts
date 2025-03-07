@@ -1,4 +1,3 @@
-// (c) 2024 Xilytix Pty Ltd
 
 import { UnreachableCaseError } from './internal-error';
 import { Err, Ok, Result } from './result';

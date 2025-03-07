@@ -1,4 +1,3 @@
-// (c) 2024 Xilytix Pty Ltd
 
 import { nanoid } from 'nanoid';
 import { Err, Ok, Result } from './result';

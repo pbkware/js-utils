@@ -1,24 +1,22 @@
 {
-  "name": "@xilytix/sysutils",
-  "version": "0.0.4",
-  "description": "Xilytix System types, constants and utilities",
+  "name": "@pbkware/javascript-utils",
+  "version": "0.8.0",
+  "description": "Javascript utility types, constants and functions",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/xilytix/sysutils.git"
+    "url": "git+ssh://git@github.com/pbkware/javascript-utils.git"
   },
   "keywords": [
-    "Xilytix",
-    "System",
     "Utilities"
   ],
-  "homepage": "https://xilytix.com",
+  "homepage": "https://pbkware.klink.au/javascript-utils",
   "author": {
-    "name": "Xilytix",
-    "url": "https://xilytix.com/"
+    "name": "Paul Klink",
+    "url": "https://paul.klink.au/"
   },
-  "license": "SEE LICENSE IN license.txt",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/xilytix/sysutils/issues"
+    "url": "https://github.com/pbkware/javascript-utils/issues"
   },
   "module": "dist/code/public-api.js",
   "typings": "dist/types/public-api.d.ts",

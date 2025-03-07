@@ -1,6 +1,5 @@
-// (c) 2024 Xilytix Pty Ltd
 
-import { Integer } from './types';
+import type { Integer } from './types';
 import { isDigitCharCode, mSecsPerHour, mSecsPerMin, parseIntStrict, parseNumberStrict } from './utils';
 
 /** @public */

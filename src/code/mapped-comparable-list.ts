@@ -1,4 +1,3 @@
-// (c) 2024 Xilytix Pty Ltd
 
 import { ChangeSubscribableComparableList } from './change-subscribable-comparable-list';
 import { AssertInternalError, InternalError, UnreachableCaseError } from './internal-error';

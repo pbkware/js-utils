@@ -1,7 +1,6 @@
-// (c) 2024 Xilytix Pty Ltd
 
 import { AssertInternalError } from './internal-error';
-import { ComparisonResult, Integer } from './types';
+import { ComparisonResult, type Integer } from './types';
 
 /** @public */
 export namespace BinaryFind {
