@@ -2,6 +2,8 @@
 
 /** @public */
 export abstract class InternalError extends Error {
+    readonly classId = InternalError.classId;
+
     constructor(readonly code: string, message: string | undefined, errorType: string) {
         super(message === undefined || message === '' ?
             `${errorType}: ${code}`
@@ -13,6 +15,8 @@ export abstract class InternalError extends Error {
 
 /** @public */
 export namespace InternalError {
+    export const classId = 'pbkware/js-utils>internal-error>InternalError';
+
     export const enum ExtraFormatting {
         Ignore,
         PrependWithColonSpace,
@@ -20,6 +24,27 @@ export namespace InternalError {
         Postpend,
         PostpendColonSpace,
         PostpendColonSpaceQuoted,
+    }
+
+    export function is(value: unknown): value is InternalError {
+        if (typeof value !== 'object') {
+            return false;
+        } else {
+            if (value === null) {
+                return false;
+            } else {
+                if (!('classId' in value)) {
+                    return false;
+                } else {
+                    const valueClassId = value.classId;
+                    if (typeof valueClassId !== 'string') {
+                        return false;
+                    } else {
+                        return valueClassId === classId;
+                    }
+                }
+            }
+        }
     }
 
     export function formatExtra(existingMessage: string, extraMessage: string, extraFormatting: ExtraFormatting) {
