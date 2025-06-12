@@ -260,17 +260,9 @@ export namespace CommaText {
 }
 
 // @public (undocumented)
-export class ComparableList<out T extends U, in U = T> {
+export class ComparableList<out T extends U, in U = T> implements Iterable<T> {
     // (undocumented)
-    [Symbol.iterator](): {
-        next(): {
-            value: T;
-            done: boolean;
-        } | {
-            done: boolean;
-            value?: undefined;
-        };
-    };
+    [Symbol.iterator](): Iterator<T>;
     constructor(compareItemsFtn?: CompareFtn<U>);
     // (undocumented)
     add(value: T): number;

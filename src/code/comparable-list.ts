@@ -6,7 +6,7 @@ import { ComparisonResult, type Integer } from './types';
 import { moveElementInArray, moveElementsInArray } from './utils';
 
 /** @public */
-export class ComparableList<out T extends U, in U = T> {
+export class ComparableList<out T extends U, in U = T> implements Iterable<T> {
     readonly items = new Array<T>(); // Caution, length of this array is NOT count.  It can have extra capacity
 
     capacityIncSize: Integer | undefined;
@@ -28,21 +28,20 @@ export class ComparableList<out T extends U, in U = T> {
     get count(): Integer { return this._count; }
     set count(value: Integer) { this.setCount(value); }
 
-    [Symbol.iterator]() {
+    [Symbol.iterator](): Iterator<T> {
         let i = 0;
         const items = this.items;
         const count = this._count;
         return {
-            next() {
+            next(): IteratorResult<T> {
                 if(i < count) {
                     return { value: items[i++], done: false };
                 } else {
-                    return { done: true };
+                    return { value: undefined, done: true };
                 }
             }
         };
     }
-
 
     clone(): ComparableList<T, U> {
         const result = new ComparableList<T, U>(this._compareItemsFtn);
