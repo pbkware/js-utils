@@ -4,21 +4,21 @@ declare global {
     interface Window {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         [key: string]: any;
-        __pbkwareLogger__: Logger;
+        __pbkwareLogger__?: Logger;
     }
 }
 
 /** @public */
 export function getOrCreateLoggerGlobalAlias(loggerGlobalAliasKey: string) {
-    let globalLogger = window.__pbkwareLogger__ as Logger | undefined;
-    if (globalLogger === undefined) {
-        globalLogger = new Logger();
-        window.__pbkwareLogger__ = globalLogger;
+    let pbkwareLogger = window.__pbkwareLogger__ as Logger | undefined;
+    if (pbkwareLogger === undefined) {
+        pbkwareLogger = new Logger();
+        window.__pbkwareLogger__ = pbkwareLogger;
     }
 
     let aliasLogger = window[loggerGlobalAliasKey] as Logger | undefined;
-    if (aliasLogger === undefined || aliasLogger !== globalLogger) {
-        aliasLogger = globalLogger;
+    if (aliasLogger === undefined || aliasLogger !== pbkwareLogger) {
+        aliasLogger = pbkwareLogger;
         window[loggerGlobalAliasKey] = aliasLogger;
     }
 

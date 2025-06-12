@@ -9,7 +9,11 @@ export abstract class InternalError extends Error {
             `${errorType}: ${code}`
             :
             `${errorType}: ${code}: ${message}`);
-        window.__pbkwareLogger__.logError(this.message, 120);
+
+        const pbkwareLogger = window.__pbkwareLogger__;
+        if (pbkwareLogger !== undefined) {
+            pbkwareLogger.logError(this.message, 120);
+        }
     }
 }
 
