@@ -1,6 +1,5 @@
 /** @public */
 export namespace MurmurHash3 {
-    /* eslint-disable no-bitwise */
     /*
         MurmurHash3
         ---------------

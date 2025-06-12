@@ -12,12 +12,10 @@ export type DateOrDateTime = Date;
 /** @public */
 export type TimeSpan = number;
 
-// eslint-disable-next-line @typescript-eslint/ban-types
 /** @public */
 export type JsonValue = string | number | boolean | null | Json | object | JsonValueArray;
 // export type JsonValue = string | number | boolean | null | Json | JsonValueArray;
 /** @public */
-// eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
 export interface Json {
     [name: string]: JsonValue;
 }
@@ -29,7 +27,6 @@ export namespace JsonValue {
         return isJsonObject(value);
     }
 
-    // eslint-disable-next-line @typescript-eslint/ban-types
     export function isJsonObject(value: JsonValue | undefined): value is Json | object {
         return !Array.isArray(value) && typeof value === 'object' && value !== null;
     }

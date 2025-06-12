@@ -1,6 +1,5 @@
 
 declare global {
-    // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
     interface Window {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         [key: string]: any;
@@ -10,7 +9,7 @@ declare global {
 
 /** @public */
 export function getOrCreateLoggerGlobalAlias(loggerGlobalAliasKey: string) {
-    let pbkwareLogger = window.__pbkwareLogger__ as Logger | undefined;
+    let pbkwareLogger = window.__pbkwareLogger__;
     if (pbkwareLogger === undefined) {
         pbkwareLogger = new Logger();
         window.__pbkwareLogger__ = pbkwareLogger;

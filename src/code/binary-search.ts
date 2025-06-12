@@ -46,9 +46,7 @@ export function rangedAnyBinarySearch<T extends U, U = T>(
             let l = index;
             let h = index + count - 1;
             while (l <= h) {
-                /* eslint-disable no-bitwise */
                 const mid = l + ((h - l) >> 1);
-                /* eslint-enable no-bitwise */
                 const cmp = compare(values[mid], item);
                 if (cmp < ComparisonResult.LeftEqualsRight) {
                     l = mid + 1;
@@ -104,9 +102,7 @@ export function rangedEarliestBinarySearch<T extends U, U = T>(
             let l = index;
             let h = index + count - 1;
             while (l <= h) {
-                /* eslint-disable no-bitwise */
                 const mid = l + ((h - l) >> 1);
-                /* eslint-enable no-bitwise */
                 const cmp = compare(values[mid], item);
                 if (cmp < ComparisonResult.LeftEqualsRight) {
                     l = mid + 1;
@@ -160,9 +156,7 @@ export function rangedLatestBinarySearch<T extends U, U = T>(
             let l = index;
             let h = index + count - 1;
             while (l <= h) {
-                /* eslint-disable no-bitwise */
                 const mid = l + ((h - l) >> 1);
-                /* eslint-enable no-bitwise */
                 const cmp = compare(values[mid], item);
                 if (cmp > ComparisonResult.LeftEqualsRight) {
                     h = mid - 1;

@@ -1394,16 +1394,16 @@ export const enum ModifierKeyId {
 }
 
 // @public (undocumented)
-export function moveElementInArray<T>(array: T[], fromIndex: number, toIndex: number): void;
+export function moveElementInArray(array: unknown[], fromIndex: number, toIndex: number): void;
 
 // @public (undocumented)
-export function moveElementsInArray<T>(array: T[], fromIndex: Integer, toIndex: Integer, count: Integer): void;
+export function moveElementsInArray(array: unknown[], fromIndex: Integer, toIndex: Integer, count: Integer): void;
 
 // @public (undocumented)
-export function moveIndexedElementsInArrayOnePositionTowardsEndWithSquash<T>(array: T[], elementIndices: Integer[]): void;
+export function moveIndexedElementsInArrayOnePositionTowardsEndWithSquash(array: unknown[], elementIndices: Integer[]): void;
 
 // @public (undocumented)
-export function moveIndexedElementsInArrayOnePositionTowardsStartWithSquash<T>(array: T[], elementIndices: Integer[]): void;
+export function moveIndexedElementsInArrayOnePositionTowardsStartWithSquash(array: unknown[], elementIndices: Integer[]): void;
 
 // @public (undocumented)
 export const mSecsPerDay: number;
@@ -1614,7 +1614,7 @@ export const secsPerHour: number;
 export const secsPerMin = 60;
 
 // @public (undocumented)
-export function shuffleElementsUpInArray<T>(array: T[], index: Integer, count: Integer): void;
+export function shuffleElementsUpInArray(array: unknown[], index: Integer, count: Integer): void;
 
 // @public (undocumented)
 export interface SourceTzOffsetDate {

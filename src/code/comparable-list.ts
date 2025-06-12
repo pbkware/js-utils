@@ -24,7 +24,6 @@ export class ComparableList<out T extends U, in U = T> implements Iterable<T> {
     get lastIndex() { return this._count - 1; }
     get capacity(): Integer { return this.getCapacity(); }
     set capacity(value: Integer) { this.setCapacity(value); }
-    // eslint-disable-next-line @typescript-eslint/member-ordering
     get count(): Integer { return this._count; }
     set count(value: Integer) { this.setCount(value); }
 

@@ -1226,7 +1226,7 @@ export function dateToDateOnlyIsoString(value: Date) {
 }
 
 /** @public */
-export function moveElementInArray<T>(array: T[], fromIndex: number, toIndex: number) {
+export function moveElementInArray(array: unknown[], fromIndex: number, toIndex: number) {
     if (toIndex > fromIndex) {
         const item = array[fromIndex];
         for (let i = fromIndex; i < toIndex; i++) {
@@ -1245,7 +1245,7 @@ export function moveElementInArray<T>(array: T[], fromIndex: number, toIndex: nu
 }
 
 /** @public */
-export function moveIndexedElementsInArrayOnePositionTowardsStartWithSquash<T>(array: T[], elementIndices: Integer[]) {
+export function moveIndexedElementsInArrayOnePositionTowardsStartWithSquash(array: unknown[], elementIndices: Integer[]) {
     let lowestDestinationIndex = 0;
     const elementIndicesCount = elementIndices.length;
     elementIndices.sort((left, right) => left - right);
@@ -1265,7 +1265,7 @@ export function moveIndexedElementsInArrayOnePositionTowardsStartWithSquash<T>(a
 }
 
 /** @public */
-export function moveIndexedElementsInArrayOnePositionTowardsEndWithSquash<T>(array: T[], elementIndices: Integer[]) {
+export function moveIndexedElementsInArrayOnePositionTowardsEndWithSquash(array: unknown[], elementIndices: Integer[]) {
     let highestDestinationIndex = array.length - 1;
     const elementIndicesCount = elementIndices.length;
     elementIndices.sort((left, right) => left - right);
@@ -1285,7 +1285,7 @@ export function moveIndexedElementsInArrayOnePositionTowardsEndWithSquash<T>(arr
 }
 
 /** @public */
-export function moveElementsInArray<T>(array: T[], fromIndex: Integer, toIndex: Integer, count: Integer) {
+export function moveElementsInArray(array: unknown[], fromIndex: Integer, toIndex: Integer, count: Integer) {
     const temp = array.slice(fromIndex, fromIndex + count);
     if (fromIndex < toIndex) {
         for (let i = fromIndex; i < toIndex; i++) {
@@ -1303,7 +1303,7 @@ export function moveElementsInArray<T>(array: T[], fromIndex: Integer, toIndex: 
 }
 
 /** @public */
-export function shuffleElementsUpInArray<T>(array: T[], index: Integer, count: Integer) {
+export function shuffleElementsUpInArray(array: unknown[], index: Integer, count: Integer) {
     // will overwrite elements at top of array
     const elementCount = array.length;
     let dstIdx = elementCount - 1;

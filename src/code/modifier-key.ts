@@ -15,7 +15,6 @@ export namespace ModifierKey {
 
     export namespace IdSet {
         export function create(altKey: boolean, ctrlKey: boolean, metaKey: boolean, shiftKey: boolean): IdSet {
-            // eslint-disable-next-line no-bitwise
             return (altKey ? ModifierKeyId.Alt : 0) |
                 (ctrlKey ? ModifierKeyId.Ctrl : 0) |
                 (metaKey ? ModifierKeyId.Meta : 0) |
@@ -24,7 +23,6 @@ export namespace ModifierKey {
     }
 
     export function idSetIncludes(idSet: IdSet, value: ModifierKeyId) {
-        // eslint-disable-next-line no-bitwise
         return (idSet & value) as ModifierKeyId === value;
     }
 }

@@ -45,9 +45,7 @@ export namespace BinaryFind {
                 let l = index;
                 let h = index + count - 1;
                 while (l <= h) {
-                    /* eslint-disable no-bitwise */
                     const mid = l + ((h - l) >> 1);
-                    /* eslint-enable no-bitwise */
                     const cmp = compareItemFn(values[mid]);
                     if (cmp < ComparisonResult.LeftEqualsRight) {
                         l = mid + 1;
@@ -101,9 +99,7 @@ export namespace BinaryFind {
                 let l = index;
                 let h = index + count - 1;
                 while (l <= h) {
-                    /* eslint-disable no-bitwise */
                     const mid = l + ((h - l) >> 1);
-                    /* eslint-enable no-bitwise */
                     const cmp = compareItemFn(values[mid]);
                     if (cmp < ComparisonResult.LeftEqualsRight) {
                         l = mid + 1;
@@ -155,9 +151,7 @@ export namespace BinaryFind {
                 let l = index;
                 let h = index + count - 1;
                 while (l <= h) {
-                    /* eslint-disable no-bitwise */
                     const mid = l + ((h - l) >> 1);
-                    /* eslint-enable no-bitwise */
                     const cmp = compareItemFn(values[mid]);
                     if (cmp > ComparisonResult.LeftEqualsRight) {
                         h = mid - 1;

@@ -146,7 +146,7 @@ export namespace AssertInternalError {
     ): void {
         promise.then(
             () => {/**/},
-            (reason) => { throw AssertInternalError.createIfNotError(reason, code, extraMessage, extraFormatting); }
+            (reason: unknown) => { throw AssertInternalError.createIfNotError(reason, code, extraMessage, extraFormatting); }
         );
     }
 }

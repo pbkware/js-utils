@@ -46,7 +46,7 @@ export class JsonElement {
         try {
             this._json = JSON.parse(jsonText) as Json;
             return new Ok(undefined);
-        } catch (e) {
+        } catch {
             this.clear();
             return new Err(JsonElement.ErrorId.InvalidJsonText);
         }
@@ -89,7 +89,6 @@ export class JsonElement {
         return this._json[name];
     }
 
-    // eslint-disable-next-line @typescript-eslint/ban-types
     tryGetNativeObject(name: string): Result<object, JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotOfTypeObject> {
         const jsonValue = this._json[name];
         if (jsonValue === undefined) {
@@ -99,7 +98,6 @@ export class JsonElement {
         }
     }
 
-    // eslint-disable-next-line @typescript-eslint/ban-types
     tryGetUndefinableNativeObject(name: string): Result<object | undefined, JsonElement.ErrorId.JsonValueIsNotOfTypeObject> {
         const jsonValue = this._json[name];
         if (jsonValue === undefined) {
@@ -304,7 +302,6 @@ export class JsonElement {
 
     tryGetElementArray(name: string): Result<JsonElement[], JsonElement.ErrorId.JsonValueIsNotDefined | JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotAnObject> {
         const jsonValue = this._json[name];
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (jsonValue === undefined) {
             return new Err(JsonElement.ErrorId.JsonValueIsNotDefined);
         } else {
@@ -314,7 +311,6 @@ export class JsonElement {
 
     tryGetUndefinableElementArray(name: string): Result<JsonElement[] | undefined, JsonElement.ErrorId.JsonValueIsNotAnArray | JsonElement.ErrorId.JsonValueArrayElementIsNotAnObject> {
         const jsonValue = this._json[name];
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (jsonValue === undefined) {
             return new Ok(undefined);
         } else {
@@ -1051,7 +1047,7 @@ export namespace JsonElement {
             try {
                 const value = decimalFactory.newDecimal(jsonValue);
                 return new Ok(value);
-            } catch (e) {
+            } catch {
                 return new Err(JsonElement.ErrorId.InvalidDecimal);
             }
         } else {

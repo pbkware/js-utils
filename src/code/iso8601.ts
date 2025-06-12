@@ -86,7 +86,7 @@ export namespace Iso8601 {
                         offset = offsetParseResult.offset;
 
                         if (nextIdx !== valueLength) {
-                            value.trimRight();
+                            value.trimEnd();
                             if (nextIdx !== value.length) {
                                 return undefined;
                             }
