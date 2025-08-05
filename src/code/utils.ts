@@ -368,6 +368,21 @@ export function addToGrow15ArrayUniquely<T>(target: T[], count: Integer, additio
 }
 
 /** @public */
+export function subtractArrays<T>(minuend: readonly T[], subtrahend: readonly T[]): T[] {
+    const result = new Array<T>(minuend.length);
+    let count = 0;
+    for (let i = 0; i < minuend.length; i++) {
+        const element = minuend[i];
+        if (!subtrahend.includes(element)) {
+            result[count++] = element;
+        }
+    }
+
+    result.length = count;
+    return result;
+}
+
+/** @public */
 export function removeFromArray<T>(array: T[], removeElements: readonly T[]): Integer | undefined {
     let firstRemoveIndex: Integer | undefined;
     let blockLastIndex: Integer | undefined;
@@ -588,6 +603,18 @@ export function compareArray<T>(left: readonly T[], right: readonly T[]): number
             return leftIsShorter ? ComparisonResult.LeftLessThanRight : 1;
         }
     }
+}
+
+/** @public */
+export function doesArrayContainArray<T>(container: readonly T[], contained: readonly T[]): boolean {
+    const containedCount = contained.length;
+    for (let i = 0; i < containedCount; i++) {
+        const item = contained[i];
+        if (!container.includes(item)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 /** @public */

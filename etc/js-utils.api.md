@@ -538,6 +538,9 @@ export function deepExtendValue(existingTarget: unknown, value: unknown): unknow
 // @public (undocumented)
 export function delay1Tick(ftn: () => void): ReturnType<typeof setTimeout>;
 
+// @public (undocumented)
+export function doesArrayContainArray<T>(container: readonly T[], contained: readonly T[]): boolean;
+
 // @public
 export function earliestBinarySearch<T extends U, U = T>(values: T[], item: T, compare: CompareFtn<U>): BinarySearchResult;
 
@@ -1283,7 +1286,7 @@ export namespace Logger {
         readonly text: string;
     }
     // (undocumented)
-    export type LogEventer = (this: void, logEvent: LogEvent) => void;
+    export type LogEventer = (this: void, logEvent: LogEvent, notifyRecurseCount: Integer) => void;
     // (undocumented)
     export class UnreachableCaseError extends Error {
         constructor(code: string, value: never);
@@ -1708,6 +1711,9 @@ export class StringBuilder {
     // (undocumented)
     toString(): string;
 }
+
+// @public (undocumented)
+export function subtractArrays<T>(minuend: readonly T[], subtrahend: readonly T[]): T[];
 
 // @public (undocumented)
 export function subtractElementFromArray<T>(array: readonly T[], element: T): T[];
