@@ -1,3 +1,4 @@
+import { Integer } from './types';
 
 declare global {
     interface Window {
@@ -27,6 +28,7 @@ export function getOrCreateLoggerGlobalAlias(loggerGlobalAliasKey: string) {
 /** @public */
 export class Logger {
     private readonly _bufferedLogEvents = new Array<Logger.LogEvent>(); // Used to buffer events prior to Eventer being defined
+    private _notifyDepth = 0; // Used to prevent infinite loops in case of logging inside a log event handler
 
     private _logEventer: Logger.LogEventer | undefined;
 
@@ -35,7 +37,7 @@ export class Logger {
     setLogEventer(value: Logger.LogEventer) {
         this._logEventer = value;
         if (this._bufferedLogEvents.length > 0) {
-            this._bufferedLogEvents.forEach((event) => value(event));
+            this._bufferedLogEvents.forEach((event) => this.notifyLogEvent(event));
             this._bufferedLogEvents.length = 0;
         }
     }
@@ -71,10 +73,16 @@ export class Logger {
     }
 
     private notifyLogEvent(logEvent: Logger.LogEvent) {
-        if (this._logEventer !== undefined) {
-            this._logEventer(logEvent);
-        } else {
+        if (this._logEventer === undefined) {
             this._bufferedLogEvents.push(logEvent);
+        } else {
+            const notifyRecurseCount = this._notifyDepth;
+            this._notifyDepth++;
+            try {
+                this._logEventer(logEvent, notifyRecurseCount);
+            } finally {
+                this._notifyDepth--;
+            }
         }
     }
 
@@ -96,7 +104,7 @@ export class Logger {
 
 /** @public */
 export namespace Logger {
-    export type LogEventer = (this: void, logEvent: LogEvent) => void;
+    export type LogEventer = (this: void, logEvent: LogEvent, notifyRecurseCount: Integer) => void;
 
     export const enum LevelId {
         Debug,
